@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Georgia&family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #e6e2d8;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .serif-title {
+            font-family: 'Georgia', serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e6e2d8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* Input styling for fill in the blanks */
+        .fill-input {
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-weight: 600;
+            color: #1e3a5f;
+            background-color: #ffffff;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            text-align: center;
+        }
+        .fill-input:focus {
+            outline: none;
+            border-color: #21395c;
+            box-shadow: 0 0 0 2px rgba(33, 57, 92, 0.2);
+        }
+
+        /* Custom Radio Styling */
+        .custom-radio {
+            accent-color: #21395c;
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation Header -->
+    <header class="bg-[#1e3a5f] text-white px-4 md:px-8 py-3.5 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <h1 class="text-base md:text-lg font-bold tracking-wide">Reading Section</h1>
+        <div id="header-subtitle" class="text-xs md:text-sm text-gray-200 font-medium hidden md:block">Welcome</div>
+        <div class="border border-blue-300/40 bg-[#172c48] px-4 py-1 rounded text-sm md:text-base font-mono font-semibold tracking-wider text-gray-100 min-w-[75px] text-center" id="timer-display">
+            --:--
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-6 md:p-10">
+        <div id="app-card" class="bg-white rounded-lg shadow-sm border border-gray-200/80 w-full max-w-4xl p-6 md:p-10 my-auto min-h-[450px] flex flex-col justify-between transition-all">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+    </main>
+
+    <script>
+        const m1CorrectAnswers = {
+            1: 'sig', 2: 'du', 3: 'bit', 4: 'ord', 5: 'mpar',
+            6: 'ie', 7: 'trac', 8: 'earc', 9: 'tio', 10: 'sa',
+            11: 'ion', 12: 'er', 13: 'ter', 14: 'stan', 15: 'ear',
+            16: 'tu', 17: 'tor', 18: 'ist', 19: 'fi', 20: 'ns',
+            21: 'B', 22: 'C', 23: 'C', 24: 'B', 25: 'B',
+            26: 'B', 27: 'B', 28: 'C', 29: 'A', 30: 'B',
+            31: 'B', 32: 'A', 33: 'B', 34: 'B', 35: 'C'
+        };
+
+        const m2CorrectAnswers = {
+            1: 'se', 2: 'ib', 3: 'at', 4: 'va', 5: 'on',
+            6: 'um', 7: 'mp', 8: 'la', 9: 't', 10: 'u',
+            11: 'B', 12: 'A', 13: 'A', 14: 'A', 15: 'B'
+        };
+
+        const state = {
+            studentName: '',
+            studentEmail: '',
+            currentStage: 'WELCOME', // WELCOME, M1_START, M1_TEST, M2_START, M2_TEST, END_PHASE_2
+            m1Index: 0,
+            m2Index: 0,
+            m1Answers: {}, 
+            m2Answers: {},
+            m1TimeLeft: 20 * 60,
+            m2TimeLeft: 20 * 60,
+            m1TimerInterval: null,
+            m2TimerInterval: null
+        };
+
+        const module1Questions = [
+            // Questions 1-10 Task A Rooftop Garden
+            {
+                id: 1,
+                type: 'FILL',
+                taskTitle: 'Task A - Complete the Words (Questions 1-10)',
+                instructions: 'Complete the missing letters in the words marked with underscores. Enter only the missing letters.',
+                passage: `The university's new rooftop garden was de <input type="text" data-q="1" class="fill-input w-12" maxlength="4"> ned to re <input type="text" data-q="2" class="fill-input w-12" maxlength="4"> ce building heat and provide a small ha <input type="text" data-q="3" class="fill-input w-12" maxlength="4"> at for pollinators. During the first year, students rec <input type="text" data-q="4" class="fill-input w-12" maxlength="4"> ed the number of visiting insects and co <input type="text" data-q="5" class="fill-input w-14" maxlength="5"> ed the results with data from nearby ground-level gardens. Although the rooftop space had fewer plant var <input type="text" data-q="6" class="fill-input w-12" maxlength="4"> ties, it at <input type="text" data-q="7" class="fill-input w-14" maxlength="5"> ted a surprising range of bees and butterflies. Res <input type="text" data-q="8" class="fill-input w-14" maxlength="5"> hers concluded that careful plant selec <input type="text" data-q="9" class="fill-input w-12" maxlength="4"> n can compen <input type="text" data-q="10" class="fill-input w-12" maxlength="4"> te for the limits of a compact urban garden.`,
+                targetQ: 1,
+                targetWord: 'designed',
+                hint: '1. de _ _ _ ned'
+            },
+            { id: 2, type: 'FILL_GROUP', targetQ: 2, hint: '2. re _ _ ce', refGroup: 1 },
+            { id: 3, type: 'FILL_GROUP', targetQ: 3, hint: '3. ha _ _ _ at', refGroup: 1 },
+            { id: 4, type: 'FILL_GROUP', targetQ: 4, hint: '4. rec _ _ _ ed', refGroup: 1 },
+            { id: 5, type: 'FILL_GROUP', targetQ: 5, hint: '5. co _ _ _ _ ed', refGroup: 1 },
+            { id: 6, type: 'FILL_GROUP', targetQ: 6, hint: '6. var _ _ ties', refGroup: 1 },
+            { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: '7. at _ _ _ _ ted', refGroup: 1 },
+            { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: '8. Res _ _ _ _ hers', refGroup: 1 },
+            { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: '9. selec _ _ _ n', refGroup: 1 },
+            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. compen _ _ te', refGroup: 1 },
+
+            // Questions 11-20 Task A Mangroves
+            {
+                id: 11,
+                type: 'FILL',
+                taskTitle: 'Task A - Complete the Words (Questions 11-20)',
+                instructions: 'Complete the missing letters in the words marked with underscores. Enter only the missing letters.',
+                passage: `In many coastal reg <input type="text" data-q="11" class="fill-input w-12" maxlength="4"> s, mangrove forests act as natural barri <input type="text" data-q="12" class="fill-input w-10" maxlength="3"> s during storms. Their tangled roots slow moving water, trap sediment, and create shel <input type="text" data-q="13" class="fill-input w-12" maxlength="4"> ed areas where young fish can develop. Scientists have also found that mangrove soils can store sub <input type="text" data-q="14" class="fill-input w-14" maxlength="5"> tial amounts of carbon. Yet these forests are often cl <input type="text" data-q="15" class="fill-input w-12" maxlength="4"> ed for construction or aquacul <input type="text" data-q="16" class="fill-input w-10" maxlength="3"> re. Recent res <input type="text" data-q="17" class="fill-input w-12" maxlength="4"> ation projects suggest that protecting ex <input type="text" data-q="18" class="fill-input w-12" maxlength="4"> ing mangroves may be more ef <input type="text" data-q="19" class="fill-input w-10" maxlength="3"> cient than rebuilding them after exte <input type="text" data-q="20" class="fill-input w-10" maxlength="3"> ive damage has occurred.`,
+                targetQ: 11,
+                targetWord: 'regions',
+                hint: '11. reg _ _ _ s'
+            },
+            { id: 12, type: 'FILL_GROUP', targetQ: 12, hint: '12. barri _ _ s', refGroup: 11 },
+            { id: 13, type: 'FILL_GROUP', targetQ: 13, hint: '13. shel _ _ _ ed', refGroup: 11 },
+            { id: 14, type: 'FILL_GROUP', targetQ: 14, hint: '14. sub _ _ _ _ tial', refGroup: 11 },
+            { id: 15, type: 'FILL_GROUP', targetQ: 15, hint: '15. cl _ _ _ ed', refGroup: 11 },
+            { id: 16, type: 'FILL_GROUP', targetQ: 16, hint: '16. aquacul _ _ re', refGroup: 11 },
+            { id: 17, type: 'FILL_GROUP', targetQ: 17, hint: '17. res _ _ _ ation', refGroup: 11 },
+            { id: 18, type: 'FILL_GROUP', targetQ: 18, hint: '18. ex _ _ _ ing', refGroup: 11 },
+            { id: 19, type: 'FILL_GROUP', targetQ: 19, hint: '19. ef _ _ cient', refGroup: 11 },
+            { id: 20, type: 'FILL_GROUP', targetQ: 20, hint: '20. exte _ _ ive', refGroup: 11 },
+
+            // Questions 21-25 Task B Daily Life
+            {
+                id: 21,
+                type: 'MCQ',
+                taskTitle: 'Task B - Read in Daily Life (Questions 21-25)',
+                contextTitle: 'Campus Health Notice - Flu Vaccination Clinic',
+                contextText: 'Walk-in appointments are available in Room 214 from 10:00 a.m. to 3:00 p.m. on Thursday. Students should bring their university ID. If you have received a vaccination elsewhere this season, you do not need another dose unless a medical professional has advised otherwise.',
+                question: '21. Who is the notice primarily for?',
+                options: ['A. Visitors to the campus', 'B. Students', 'C. Clinic employees', 'D. Medical researchers']
+            },
+            {
+                id: 22,
+                type: 'MCQ',
+                taskTitle: 'Task B - Read in Daily Life (Questions 21-25)',
+                contextTitle: 'Campus Health Notice - Flu Vaccination Clinic',
+                contextText: 'Walk-in appointments are available in Room 214 from 10:00 a.m. to 3:00 p.m. on Thursday. Students should bring their university ID. If you have received a vaccination elsewhere this season, you do not need another dose unless a medical professional has advised otherwise.',
+                question: '22. What should students bring?',
+                options: ['A. A prescription', 'B. Proof of insurance', 'C. University identification', 'D. A completed research survey']
+            },
+            {
+                id: 23,
+                type: 'MCQ',
+                taskTitle: 'Task B - Read in Daily Life (Questions 21-25)',
+                contextTitle: 'Message from Student Housing',
+                contextText: 'The heating system in Oak Hall will be inspected on Monday afternoon. Maintenance staff may need access to bedrooms between 1:00 and 4:00 p.m. Residents who will not be present should use the online portal to authorize access. The inspection is expected to take less than twenty minutes per room.',
+                question: '23. What are residents asked to do if they will be away?',
+                options: ['A. Call the heating company', 'B. Leave their room unlocked', 'C. Authorize access online', 'D. Move to another residence']
+            },
+            {
+                id: 24,
+                type: 'MCQ',
+                taskTitle: 'Task B - Read in Daily Life (Questions 21-25)',
+                contextTitle: 'Library Update',
+                contextText: 'Starting next week, the second floor will remain open until midnight on weekdays. The change is intended to provide more study space during the examination period. The first floor will continue to close at 10:00 p.m., and group-study rooms must still be reserved in advance.',
+                question: '24. Why is the second floor staying open later?',
+                options: ['A. A renovation is underway', 'B. More study space is needed', 'C. The first floor will be closed', 'D. Students requested new furniture']
+            },
+            {
+                id: 25,
+                type: 'MCQ',
+                taskTitle: 'Task B - Read in Daily Life (Questions 21-25)',
+                contextTitle: 'Club Announcement',
+                contextText: "The Environmental Society has moved its weekly meeting from Wednesday to Tuesday because the usual room is being used for a guest lecture. The meeting will still begin at 5:30 p.m. Members who cannot attend may submit questions through the club's discussion board.",
+                question: '25. What changed?',
+                options: ["A. The meeting room and time", "B. The meeting day", "C. The club's discussion board", "D. The topic of the meeting"]
+            },
+
+            // Questions 26-35 Task C Academic Passages
+            {
+                id: 26,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'BIOLOGY: Why Some Seeds Remain Dormant',
+                contextText: `Many plants produce seeds that do not germinate immediately after they mature. This condition, known as seed dormancy, can appear to be inefficient because a dormant seed does not produce a new plant at once. However, dormancy can protect a species when environmental conditions are temporarily unsuitable. A seed may remain inactive until temperature, moisture, or light reaches a level favorable for growth.<br><br>Dormancy also changes the timing of competition. If every seed germinated as soon as it became mature, a sudden period of drought could eliminate a large group of seedlings at the same time. By spreading germination across different seasons or years, a plant population reduces the risk that one unfavorable period will affect every new individual. Some seeds therefore remain dormant for several years.<br><br>Scientists distinguish between forms of dormancy. In physical dormancy, a hard seed coat prevents water from entering. In physiological dormancy, chemical conditions inside the seed inhibit growth. Some species combine these mechanisms. Researchers study such differences because agricultural crops with predictable germination are easier to manage, while wild plants may benefit from more variable timing. Thus, dormancy should not be viewed simply as delayed growth; it is a strategy that can improve survival in uncertain environments.`,
+                question: '26. What is the main purpose of the passage?',
+                options: ['A. To describe how farmers can eliminate seed dormancy', 'B. To explain why seed dormancy can help plants survive', 'C. To compare seeds with seedlings', 'D. To show that all dormant seeds are physically protected']
+            },
+            {
+                id: 27,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'BIOLOGY: Why Some Seeds Remain Dormant',
+                contextText: `Many plants produce seeds that do not germinate immediately after they mature. This condition, known as seed dormancy, can appear to be inefficient because a dormant seed does not produce a new plant at once. However, dormancy can protect a species when environmental conditions are temporarily unsuitable. A seed may remain inactive until temperature, moisture, or light reaches a level favorable for growth.<br><br>Dormancy also changes the timing of competition. If every seed germinated as soon as it became mature, a sudden period of drought could eliminate a large group of seedlings at the same time. By spreading germination across different seasons or years, a plant population reduces the risk that one unfavorable period will affect every new individual. Some seeds therefore remain dormant for several years.<br><br>Scientists distinguish between forms of dormancy. In physical dormancy, a hard seed coat prevents water from entering. In physiological dormancy, chemical conditions inside the seed inhibit growth. Some species combine these mechanisms. Researchers study such differences because agricultural crops with predictable germination are easier to manage, while wild plants may benefit from more variable timing. Thus, dormancy should not be viewed simply as delayed growth; it is a strategy that can improve survival in uncertain environments.`,
+                question: '27. According to paragraph 2, what is one advantage of spreading germination over time?',
+                options: ['A. It increases the size of each seed', 'B. It prevents all seedlings from being exposed to drought at once', 'C. It removes competition among plants', 'D. It guarantees that every seed germinates']
+            },
+            {
+                id: 28,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'BIOLOGY: Why Some Seeds Remain Dormant',
+                contextText: `Many plants produce seeds that do not germinate immediately after they mature. This condition, known as seed dormancy, can appear to be inefficient because a dormant seed does not produce a new plant at once. However, dormancy can protect a species when environmental conditions are temporarily unsuitable. A seed may remain inactive until temperature, moisture, or light reaches a level favorable for growth.<br><br>Dormancy also changes the timing of competition. If every seed germinated as soon as it became mature, a sudden period of drought could eliminate a large group of seedlings at the same time. By spreading germination across different seasons or years, a plant population reduces the risk that one unfavorable period will affect every new individual. Some seeds therefore remain dormant for several years.<br><br>Scientists distinguish between forms of dormancy. In physical dormancy, a hard seed coat prevents water from entering. In physiological dormancy, chemical conditions inside the seed inhibit growth. Some species combine these mechanisms. Researchers study such differences because agricultural crops with predictable germination are easier to manage, while wild plants may benefit from more variable timing. Thus, dormancy should not be viewed simply as delayed growth; it is a strategy that can improve survival in uncertain environments.`,
+                question: "28. The word 'inhibit' in paragraph 3 is closest in meaning to",
+                options: ['A. encourage', 'B. measure', 'C. prevent', 'D. observe']
+            },
+            {
+                id: 29,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'BIOLOGY: Why Some Seeds Remain Dormant',
+                contextText: `Many plants produce seeds that do not germinate immediately after they mature. This condition, known as seed dormancy, can appear to be inefficient because a dormant seed does not produce a new plant at once. However, dormancy can protect a species when environmental conditions are temporarily unsuitable. A seed may remain inactive until temperature, moisture, or light reaches a level favorable for growth.<br><br>Dormancy also changes the timing of competition. If every seed germinated as soon as it became mature, a sudden period of drought could eliminate a large group of seedlings at the same time. By spreading germination across different seasons or years, a plant population reduces the risk that one unfavorable period will affect every new individual. Some seeds therefore remain dormant for several years.<br><br>Scientists distinguish between forms of dormancy. In physical dormancy, a hard seed coat prevents water from entering. In physiological dormancy, chemical conditions inside the seed inhibit growth. Some species combine these mechanisms. Researchers study such differences because agricultural crops with predictable germination are easier to manage, while wild plants may benefit from more variable timing. Thus, dormancy should not be viewed simply as delayed growth; it is a strategy that can improve survival in uncertain environments.`,
+                question: '29. Why does the author mention agricultural crops?',
+                options: ['A. To show that predictable germination can be useful in farming', 'B. To argue that wild plants are easier to manage', 'C. To explain how hard seed coats form', 'D. To suggest that crops never experience dormancy']
+            },
+            {
+                id: 30,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'BIOLOGY: Why Some Seeds Remain Dormant',
+                contextText: `Many plants produce seeds that do not germinate immediately after they mature. This condition, known as seed dormancy, can appear to be inefficient because a dormant seed does not produce a new plant at once. However, dormancy can protect a species when environmental conditions are temporarily unsuitable. A seed may remain inactive until temperature, moisture, or light reaches a level favorable for growth.<br><br>Dormancy also changes the timing of competition. If every seed germinated as soon as it became mature, a sudden period of drought could eliminate a large group of seedlings at the same time. By spreading germination across different seasons or years, a plant population reduces the risk that one unfavorable period will affect every new individual. Some seeds therefore remain dormant for several years.<br><br>Scientists distinguish between forms of dormancy. In physical dormancy, a hard seed coat prevents water from entering. In physiological dormancy, chemical conditions inside the seed inhibit growth. Some species combine these mechanisms. Researchers study such differences because agricultural crops with predictable germination are easier to manage, while wild plants may benefit from more variable timing. Thus, dormancy should not be viewed simply as delayed growth; it is a strategy that can improve survival in uncertain environments.`,
+                question: '30. Which statement can be inferred about seed dormancy?',
+                options: ['A. It always results from lack of sunlight', 'B. It may involve more than one biological mechanism', 'C. It is unique to plants in dry climates', 'D. It prevents seeds from surviving for several years']
+            },
+            {
+                id: 31,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'HISTORY: Markets and the Growth of Medieval Towns',
+                contextText: `In medieval Europe, markets were more than places where goods were exchanged. Regular markets created predictable opportunities for farmers, artisans, and traveling merchants to meet. As these gatherings became more frequent, settlements near market sites could attract permanent shops and workshops. Over time, some small settlements developed into towns with more specialized economic activity.<br><br>The growth of a market did not automatically guarantee urban expansion. Roads, political protection, and access to water were also important. A market located on a difficult-to-reach hill, for example, might attract fewer traders than one situated near a river crossing. Local rulers sometimes encouraged markets because they could collect fees from commerce, but those same rulers also had to maintain order and protect traders.<br><br>Markets therefore influenced town development through several connected processes. They increased the frequency of economic interaction, encouraged specialization, and could attract people who provided services to merchants. Yet their effects depended on geography and political conditions. The development of a town was usually the result of several reinforcing factors rather than a single economic event.`,
+                question: '31. According to the passage, why were regular markets important?',
+                options: ['A. They replaced all agricultural activity', 'B. They created recurring opportunities for economic exchange', 'C. They guaranteed political protection', 'D. They prevented towns from specializing']
+            },
+            {
+                id: 32,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'HISTORY: Markets and the Growth of Medieval Towns',
+                contextText: `In medieval Europe, markets were more than places where goods were exchanged. Regular markets created predictable opportunities for farmers, artisans, and traveling merchants to meet. As these gatherings became more frequent, settlements near market sites could attract permanent shops and workshops. Over time, some small settlements developed into towns with more specialized economic activity.<br><br>The growth of a market did not automatically guarantee urban expansion. Roads, political protection, and access to water were also important. A market located on a difficult-to-reach hill, for example, might attract fewer traders than one situated near a river crossing. Local rulers sometimes encouraged markets because they could collect fees from commerce, but those same rulers also had to maintain order and protect traders.<br><br>Markets therefore influenced town development through several connected processes. They increased the frequency of economic interaction, encouraged specialization, and could attract people who provided services to merchants. Yet their effects depended on geography and political conditions. The development of a town was usually the result of several reinforcing factors rather than a single economic event.`,
+                question: '32. Why does the author mention a hill and a river crossing?',
+                options: ['A. To illustrate how geography could affect market success', 'B. To compare two medieval political systems', 'C. To describe how merchants traveled by boat', 'D. To explain why markets were usually built uphill']
+            },
+            {
+                id: 33,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'HISTORY: Markets and the Growth of Medieval Towns',
+                contextText: `In medieval Europe, markets were more than places where goods were exchanged. Regular markets created predictable opportunities for farmers, artisans, and traveling merchants to meet. As these gatherings became more frequent, settlements near market sites could attract permanent shops and workshops. Over time, some small settlements developed into towns with more specialized economic activity.<br><br>The growth of a market did not automatically guarantee urban expansion. Roads, political protection, and access to water were also important. A market located on a difficult-to-reach hill, for example, might attract fewer traders than one situated near a river crossing. Local rulers sometimes encouraged markets because they could collect fees from commerce, but those same rulers also had to maintain order and protect traders.<br><br>Markets therefore influenced town development through several connected processes. They increased the frequency of economic interaction, encouraged specialization, and could attract people who provided services to merchants. Yet their effects depended on geography and political conditions. The development of a town was usually the result of several reinforcing factors rather than a single economic event.`,
+                question: "33. The word 'reinforcing' in paragraph 3 is closest in meaning to",
+                options: ['A. weakening one another', 'B. working together to strengthen an effect', 'C. occurring at random', 'D. replacing older traditions']
+            },
+            {
+                id: 34,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'HISTORY: Markets and the Growth of Medieval Towns',
+                contextText: `In medieval Europe, markets were more than places where goods were exchanged. Regular markets created predictable opportunities for farmers, artisans, and traveling merchants to meet. As these gatherings became more frequent, settlements near market sites could attract permanent shops and workshops. Over time, some small settlements developed into towns with more specialized economic activity.<br><br>The growth of a market did not automatically guarantee urban expansion. Roads, political protection, and access to water were also important. A market located on a difficult-to-reach hill, for example, might attract fewer traders than one situated near a river crossing. Local rulers sometimes encouraged markets because they could collect fees from commerce, but those same rulers also had to maintain order and protect traders.<br><br>Markets therefore influenced town development through several connected processes. They increased the frequency of economic interaction, encouraged specialization, and could attract people who provided services to merchants. Yet their effects depended on geography and political conditions. The development of a town was usually the result of several reinforcing factors rather than a single economic event.`,
+                question: '34. What did local rulers sometimes gain from markets?',
+                options: ['A. Free transportation', 'B. Fees from commercial activity', 'C. Control of agricultural production', 'D. Permanent ownership of shops']
+            },
+            {
+                id: 35,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 26-35)',
+                contextTitle: 'HISTORY: Markets and the Growth of Medieval Towns',
+                contextText: `In medieval Europe, markets were more than places where goods were exchanged. Regular markets created predictable opportunities for farmers, artisans, and traveling merchants to meet. As these gatherings became more frequent, settlements near market sites could attract permanent shops and workshops. Over time, some small settlements developed into towns with more specialized economic activity.<br><br>The growth of a market did not automatically guarantee urban expansion. Roads, political protection, and access to water were also important. A market located on a difficult-to-reach hill, for example, might attract fewer traders than one situated near a river crossing. Local rulers sometimes encouraged markets because they could collect fees from commerce, but those same rulers also had to maintain order and protect traders.<br><br>Markets therefore influenced town development through several connected processes. They increased the frequency of economic interaction, encouraged specialization, and could attract people who provided services to merchants. Yet their effects depended on geography and political conditions. The development of a town was usually the result of several reinforcing factors rather than a single economic event.`,
+                question: '35. What can be inferred about town development?',
+                options: ['A. A market alone was usually sufficient', 'B. Economic growth was unrelated to geography', 'C. Several conditions often combined to support growth', 'D. Political protection mattered only after towns were large']
+            }
+        ];
+
+        const module2Questions = [
+            // Questions 1-10 Task A Museum Exhibit Navigation
+            {
+                id: 1,
+                type: 'FILL',
+                taskTitle: 'Task A - Complete the Words (Questions 1-10)',
+                instructions: 'Complete the missing letters in the words shown by underscores.',
+                passage: `The university mu <input type="text" data-q="1" class="fill-input w-10" maxlength="2"> um recently opened a small exh <input type="text" data-q="2" class="fill-input w-10" maxlength="2"> it on the history of navig <input type="text" data-q="3" class="fill-input w-10" maxlength="2"> ion. Early sailors depended on obser <input type="text" data-q="4" class="fill-input w-10" maxlength="2"> tions of the stars, coastal landmarks, and seas <input type="text" data-q="5" class="fill-input w-10" maxlength="2"> al winds. Over time, instr <input type="text" data-q="6" class="fill-input w-10" maxlength="2"> ents such as the co <input type="text" data-q="7" class="fill-input w-10" maxlength="2"> ass and the astro <input type="text" data-q="8" class="fill-input w-10" maxlength="2"> be made it easier to determine direc <input type="text" data-q="9" class="fill-input w-8" maxlength="1"> ion and estimate position. The exh__it also explains how printed charts grad <input type="text" data-q="10" class="fill-input w-8" maxlength="1"> ally replaced hand-drawn maps and allowed information to be shared more widely.`,
+                targetQ: 1,
+                targetWord: 'museum',
+                hint: '1. mu _ _ um'
+            },
+            { id: 2, type: 'FILL_GROUP', targetQ: 2, hint: '2. exh _ _ it', refGroup: 1 },
+            { id: 3, type: 'FILL_GROUP', targetQ: 3, hint: '3. navig _ _ ion', refGroup: 1 },
+            { id: 4, type: 'FILL_GROUP', targetQ: 4, hint: '4. obser _ _ tions', refGroup: 1 },
+            { id: 5, type: 'FILL_GROUP', targetQ: 5, hint: '5. seas _ _ al', refGroup: 1 },
+            { id: 6, type: 'FILL_GROUP', targetQ: 6, hint: '6. instr _ _ ents', refGroup: 1 },
+            { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: '7. co _ _ ass', refGroup: 1 },
+            { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: '8. astro _ _ be', refGroup: 1 },
+            { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: '9. direc _ ion', refGroup: 1 },
+            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. grad _ ally', refGroup: 1 },
+
+            // Questions 11-15 Task C Urban Trees and Heat
+            {
+                id: 11,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 11-15)',
+                contextTitle: 'ENVIRONMENTAL SCIENCE: Urban Trees and Heat',
+                contextText: `Cities often experience higher temperatures than nearby rural areas, a pattern commonly called the urban heat island effect. Buildings and paved surfaces absorb solar energy during the day and release it slowly after sunset. Trees can modify this pattern in several ways. Their leaves provide shade, while water released through transpiration can cool the surrounding air.<br><br>However, the cooling effect of urban trees depends on location and maintenance. A tree planted where tall buildings block sunlight may grow slowly and provide limited shade. Trees that are not watered during extended droughts may also lose leaves, reducing their cooling contribution. In addition, the benefits of a tree are not distributed evenly across a city. Neighborhoods with fewer mature trees may remain substantially warmer.<br><br>For these reasons, urban forestry programs increasingly focus on strategic placement rather than simply counting the number of trees planted. Researchers may combine temperature measurements with information about street design, building height, and tree canopy. The goal is to identify locations where new vegetation is most likely to reduce heat exposure for residents.`,
+                question: '11. What is the passage mainly about?',
+                options: ['A. How rural areas are becoming cities', 'B. Why urban trees can reduce heat and why placement matters', 'C. Why trees grow faster in cities than in rural areas', 'D. How buildings are designed to store solar energy']
+            },
+            {
+                id: 12,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 11-15)',
+                contextTitle: 'ENVIRONMENTAL SCIENCE: Urban Trees and Heat',
+                contextText: `Cities often experience higher temperatures than nearby rural areas, a pattern commonly called the urban heat island effect. Buildings and paved surfaces absorb solar energy during the day and release it slowly after sunset. Trees can modify this pattern in several ways. Their leaves provide shade, while water released through transpiration can cool the surrounding air.<br><br>However, the cooling effect of urban trees depends on location and maintenance. A tree planted where tall buildings block sunlight may grow slowly and provide limited shade. Trees that are not watered during extended droughts may also lose leaves, reducing their cooling contribution. In addition, the benefits of a tree are not distributed evenly across a city. Neighborhoods with fewer mature trees may remain substantially warmer.<br><br>For these reasons, urban forestry programs increasingly focus on strategic placement rather than simply counting the number of trees planted. Researchers may combine temperature measurements with information about street design, building height, and tree canopy. The goal is to identify locations where new vegetation is most likely to reduce heat exposure for residents.`,
+                question: '12. According to paragraph 2, why may a tree near tall buildings provide limited cooling?',
+                options: ['A. It receives less sunlight', 'B. It produces too much water', 'C. Its roots cannot reach pavement', 'D. It always loses its leaves']
+            },
+            {
+                id: 13,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 11-15)',
+                contextTitle: 'ENVIRONMENTAL SCIENCE: Urban Trees and Heat',
+                contextText: `Cities often experience higher temperatures than nearby rural areas, a pattern commonly called the urban heat island effect. Buildings and paved surfaces absorb solar energy during the day and release it slowly after sunset. Trees can modify this pattern in several ways. Their leaves provide shade, while water released through transpiration can cool the surrounding air.<br><br>However, the cooling effect of urban trees depends on location and maintenance. A tree planted where tall buildings block sunlight may grow slowly and provide limited shade. Trees that are not watered during extended droughts may also lose leaves, reducing their cooling contribution. In addition, the benefits of a tree are not distributed evenly across a city. Neighborhoods with fewer mature trees may remain substantially warmer.<br><br>For these reasons, urban forestry programs increasingly focus on strategic placement rather than simply counting the number of trees planted. Researchers may combine temperature measurements with information about street design, building height, and tree canopy. The goal is to identify locations where new vegetation is most likely to reduce heat exposure for residents.`,
+                question: "13. The word 'strategic' in paragraph 3 is closest in meaning to",
+                options: ['A. carefully planned', 'B. temporary', 'C. expensive', 'D. unusual']
+            },
+            {
+                id: 14,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 11-15)',
+                contextTitle: 'ENVIRONMENTAL SCIENCE: Urban Trees and Heat',
+                contextText: `Cities often experience higher temperatures than nearby rural areas, a pattern commonly called the urban heat island effect. Buildings and paved surfaces absorb solar energy during the day and release it slowly after sunset. Trees can modify this pattern in several ways. Their leaves provide shade, while water released through transpiration can cool the surrounding air.<br><br>However, the cooling effect of urban trees depends on location and maintenance. A tree planted where tall buildings block sunlight may grow slowly and provide limited shade. Trees that are not watered during extended droughts may also lose leaves, reducing their cooling contribution. In addition, the benefits of a tree are not distributed evenly across a city. Neighborhoods with fewer mature trees may remain substantially warmer.<br><br>For these reasons, urban forestry programs increasingly focus on strategic placement rather than simply counting the number of trees planted. Researchers may combine temperature measurements with information about street design, building height, and tree canopy. The goal is to identify locations where new vegetation is most likely to reduce heat exposure for residents.`,
+                question: '14. Why do researchers combine temperature measurements with information about street design?',
+                options: ['A. To determine where trees are likely to be most effective', 'B. To estimate the age of urban buildings', 'C. To identify neighborhoods with no residents', 'D. To calculate how much rainfall a city receives']
+            },
+            {
+                id: 15,
+                type: 'MCQ',
+                taskTitle: 'Task C - Read an Academic Passage (Questions 11-15)',
+                contextTitle: 'ENVIRONMENTAL SCIENCE: Urban Trees and Heat',
+                contextText: `Cities often experience higher temperatures than nearby rural areas, a pattern commonly called the urban heat island effect. Buildings and paved surfaces absorb solar energy during the day and release it slowly after sunset. Trees can modify this pattern in several ways. Their leaves provide shade, while water released through transpiration can cool the surrounding air.<br><br>However, the cooling effect of urban trees depends on location and maintenance. A tree planted where tall buildings block sunlight may grow slowly and provide limited shade. Trees that are not watered during extended droughts may also lose leaves, reducing their cooling contribution. In addition, the benefits of a tree are not distributed evenly across a city. Neighborhoods with fewer mature trees may remain substantially warmer.<br><br>For these reasons, urban forestry programs increasingly focus on strategic placement rather than simply counting the number of trees planted. Researchers may combine temperature measurements with information about street design, building height, and tree canopy. The goal is to identify locations where new vegetation is most likely to reduce heat exposure for residents.`,
+                question: '15. What does the passage imply about tree-planting programs?',
+                options: ['A. Planting more trees everywhere automatically produces equal benefits', 'B. The effectiveness of trees can vary across a city', 'C. Trees are rarely useful during summer', 'D. Maintenance is less important than tree species']
+            }
+        ];
+
+        function render() {
+            const card = document.getElementById('app-card');
+            const subTitle = document.getElementById('header-subtitle');
+
+            if (state.currentStage === 'WELCOME') {
+                subTitle.textContent = 'Welcome';
+                updateTimerDisplay('--:--');
+                card.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Reading Section</h2>
+                        <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                            This test has two timed modules. Within a module you can move forward and back between questions using Next and Back. Once you begin Module 2, you will not be able to return to Module 1.
+                        </p>
+                        
+                        <!-- Reference Table -->
+                        <div class="border border-amber-200/80 rounded overflow-hidden">
+                            <table class="w-full text-left text-sm text-gray-800 border-collapse">
+                                <thead>
+                                    <tr class="bg-[#f2ebd9] text-[#785b12] font-semibold border-b border-amber-200/80">
+                                        <th class="py-2.5 px-4 w-1/3">Type of Task</th>
+                                        <th class="py-2.5 px-4 w-2/3">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-amber-100 bg-[#fdfcf7]">
+                                    <tr>
+                                        <td class="py-2.5 px-4 font-medium">Complete the Words</td>
+                                        <td class="py-2.5 px-4">Fill in the missing letters in a paragraph.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2.5 px-4 font-medium">Read in Daily Life</td>
+                                        <td class="py-2.5 px-4">Answer questions about everyday texts.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2.5 px-4 font-medium">Read an Academic Passage</td>
+                                        <td class="py-2.5 px-4">Answer questions about an academic passage.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- User Info Form -->
+                        <div class="space-y-4 pt-2 max-w-md">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your name <span class="text-rose-600">*</span></label>
+                                <input type="text" id="input-name" value="${escapeHtml(state.studentName)}" placeholder="e.g. Alex Kim" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email (optional)</label>
+                                <input type="email" id="input-email" value="${escapeHtml(state.studentEmail)}" placeholder="e.g. alex@example.com" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                            </div>
+                        </div>
+
+                        <div id="validation-msg" class="text-xs text-rose-600 font-medium hidden">
+                            Please enter your name to begin the test.
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="handleBeginTest()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
+                                Begin Test
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentStage === 'M1_START') {
+                subTitle.textContent = 'Reading Module 1';
+                updateTimerDisplay('--:--');
+                card.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Reading Module 1</h2>
+                        <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                            The clock will show you how much time you have to complete Reading Module 1 (20 minutes). You can use Next and Back to move between questions within this module.
+                        </p>
+                        <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                            Once you begin Module 2, you will not be able to return to Module 1.
+                        </p>
+
+                        <div class="pt-6">
+                            <button onclick="startModule1()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
+                                Start Module
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentStage === 'M1_TEST') {
+                subTitle.textContent = 'Reading Module 1';
+                renderQuestionView(module1Questions, state.m1Index, 1);
+            } else if (state.currentStage === 'M2_START') {
+                subTitle.textContent = 'Reading Module 2';
+                updateTimerDisplay('--:--');
+                card.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Reading Module 2</h2>
+                        <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                            The clock will show you how much time you have to complete Reading Module 2 (20 minutes). You can use Next and Back to move between questions within this module.
+                        </p>
+                        <p class="text-gray-700 leading-relaxed text-sm md:text-base">
+                            You cannot return to Module 1.
+                        </p>
+
+                        <div class="pt-6">
+                            <button onclick="startModule2()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
+                                Start Module
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentStage === 'M2_TEST') {
+                subTitle.textContent = 'Reading Module 2';
+                renderQuestionView(module2Questions, state.m2Index, 2);
+            } else if (state.currentStage === 'END_PHASE_2') {
+                subTitle.textContent = 'Reading Section Complete';
+                updateTimerDisplay('--:--');
+                card.innerHTML = `
+                    <div class="space-y-6 max-w-xl">
+                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Thank You</h2>
+                        <p class="text-gray-700 text-sm md:text-base">
+                            You have completed the Reading section of the test, <span class="font-semibold">${escapeHtml(state.studentName || 'Student')}</span>.
+                        </p>
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded text-[#1e3a5f] text-sm font-medium flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-[#2b4c7e] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Your responses have been saved for this session.</span>
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="handleListeningClick()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
+                                Continue to Listening Section
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderQuestionView(questions, index, moduleNum) {
+            const card = document.getElementById('app-card');
+            const q = questions[index];
+            const isLast = index === questions.length - 1;
+            const answers = moduleNum === 1 ? state.m1Answers : state.m2Answers;
+
+            // Find parent question for FILL_GROUP
+            let activeQ = q;
+            if (q.type === 'FILL_GROUP') {
+                activeQ = questions.find(item => item.id === q.refGroup);
+            }
+
+            let questionContentHtml = '';
+
+            if (activeQ.type === 'FILL') {
+                questionContentHtml = `
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">${activeQ.taskTitle}</h3>
+                        <p class="text-xs text-gray-600 italic">${activeQ.instructions}</p>
+                        <div class="bg-[#fdfcf7] border border-amber-200/80 p-5 rounded text-sm leading-relaxed text-gray-800 space-y-2">
+                            ${activeQ.passage}
+                        </div>
+                        <div class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-600">
+                            <strong>Current Question Focus:</strong> Question ${q.targetQ} (${q.hint})
+                        </div>
+                    </div>
+                `;
+            } else if (activeQ.type === 'MCQ') {
+                const selectedVal = answers[activeQ.id] || '';
+                questionContentHtml = `
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">${activeQ.taskTitle}</h3>
+                        <div class="bg-[#fdfcf7] border border-amber-200/80 p-5 rounded text-sm leading-relaxed text-gray-800 max-h-[300px] overflow-y-auto space-y-2">
+                            <h4 class="font-bold text-[#1e3a5f] border-b border-amber-200/50 pb-1 mb-2">${activeQ.contextTitle}</h4>
+                            <p class="text-gray-800">${activeQ.contextText}</p>
+                        </div>
+                        <div class="pt-2">
+                            <p class="font-semibold text-gray-900 text-sm md:text-base mb-3">${activeQ.question}</p>
+                            <div class="space-y-2.5">
+                                ${activeQ.options.map(opt => {
+                                    const optVal = opt.substring(0, 1);
+                                    const isChecked = selectedVal === optVal ? 'checked' : '';
+                                    return `
+                                        <label class="flex items-start space-x-3 p-2.5 rounded border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors text-sm">
+                                            <input type="radio" name="mcq-${activeQ.id}" value="${optVal}" ${isChecked} onchange="saveAnswer(${moduleNum}, ${activeQ.id}, '${optVal}')" class="custom-radio mt-0.5">
+                                            <span class="text-gray-800">${opt}</span>
+                                        </label>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="flex-grow flex flex-col justify-between space-y-6">
+                    <div>
+                        <!-- Question Header / Progress -->
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Module ${moduleNum}</span>
+                            <span class="text-xs font-semibold text-[#1e3a5f] bg-blue-50 px-2.5 py-1 rounded-full">Question ${index + 1} of ${questions.length}</span>
+                        </div>
+                        ${questionContentHtml}
+                    </div>
+
+                    <!-- Navigation Footer -->
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                        <button onclick="navigateQuestion(${moduleNum}, -1)" ${index === 0 ? 'disabled class="opacity-40 bg-gray-300 text-gray-600 font-medium px-5 py-2 rounded text-sm cursor-not-allowed"' : 'class="bg-gray-600 hover:bg-gray-700 text-white font-medium px-5 py-2 rounded text-sm transition-colors shadow-sm"'}>
+                            Back
+                        </button>
+                        <button onclick="navigateQuestion(${moduleNum}, 1)" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2 rounded text-sm transition-colors shadow-sm">
+                            ${isLast ? (moduleNum === 1 ? 'Submit Module 1' : 'Submit Module 2') : 'Next'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Auto fill stored answers into input fields if Task A
+            if (activeQ.type === 'FILL') {
+                const inputs = card.querySelectorAll('input[data-q]');
+                inputs.forEach(inp => {
+                    const qNum = inp.getAttribute('data-q');
+                    if (answers[qNum]) {
+                        inp.value = answers[qNum];
+                    }
+                    inp.addEventListener('input', (e) => {
+                        saveAnswer(moduleNum, qNum, e.target.value.trim());
+                    });
+                });
+            }
+        }
+
+        function handleBeginTest() {
+            const nameEl = document.getElementById('input-name');
+            const emailEl = document.getElementById('input-email');
+            const msgEl = document.getElementById('validation-msg');
+
+            const nameVal = nameEl ? nameEl.value.trim() : '';
+            const emailVal = emailEl ? emailEl.value.trim() : '';
+
+            if (!nameVal) {
+                if (msgEl) msgEl.classList.remove('hidden');
+                return;
+            }
+
+            state.studentName = nameVal;
+            state.studentEmail = emailVal;
+            state.currentStage = 'M1_START';
+            render();
+        }
+
+        function startModule1() {
+            state.currentStage = 'M1_TEST';
+            state.m1Index = 0;
+            render();
+            startTimer(1);
+        }
+
+        function startModule2() {
+            state.currentStage = 'M2_TEST';
+            state.m2Index = 0;
+            render();
+            startTimer(2);
+        }
+
+        function startTimer(moduleNum) {
+            if (moduleNum === 1) {
+                clearInterval(state.m1TimerInterval);
+                state.m1TimerInterval = setInterval(() => {
+                    state.m1TimeLeft--;
+                    updateTimerDisplay(formatTime(state.m1TimeLeft));
+                    if (state.m1TimeLeft <= 0) {
+                        clearInterval(state.m1TimerInterval);
+                        finishModule1();
+                    }
+                }, 1000);
+            } else if (moduleNum === 2) {
+                clearInterval(state.m2TimerInterval);
+                state.m2TimerInterval = setInterval(() => {
+                    state.m2TimeLeft--;
+                    updateTimerDisplay(formatTime(state.m2TimeLeft));
+                    if (state.m2TimeLeft <= 0) {
+                        clearInterval(state.m2TimerInterval);
+                        finishModule2();
+                    }
+                }, 1000);
+            }
+        }
+
+        function formatTime(seconds) {
+            if (seconds < 0) seconds = 0;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay(str) {
+            const el = document.getElementById('timer-display');
+            if (el) el.textContent = str;
+        }
+
+        function saveAnswer(moduleNum, qId, val) {
+            if (moduleNum === 1) {
+                state.m1Answers[qId] = val;
+            } else {
+                state.m2Answers[qId] = val;
+            }
+        }
+
+        function navigateQuestion(moduleNum, direction) {
+            if (moduleNum === 1) {
+                const nextIdx = state.m1Index + direction;
+                if (nextIdx >= module1Questions.length) {
+                    finishModule1();
+                } else if (nextIdx >= 0) {
+                    state.m1Index = nextIdx;
+                    render();
+                }
+            } else {
+                const nextIdx = state.m2Index + direction;
+                if (nextIdx >= module2Questions.length) {
+                    finishModule2();
+                } else if (nextIdx >= 0) {
+                    state.m2Index = nextIdx;
+                    render();
+                }
+            }
+        }
+
+        function finishModule1() {
+            clearInterval(state.m1TimerInterval);
+            state.currentStage = 'M2_START';
+            render();
+        }
+
+        function finishModule2() {
+            clearInterval(state.m2TimerInterval);
+            state.currentStage = 'END_PHASE_2';
+            render();
+        }
+
+        function handleListeningClick() {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded shadow-lg text-sm transition-opacity duration-300 z-50';
+            toast.textContent = 'Reading test complete. Moving to the Listening Section!';
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        window.handleBeginTest = handleBeginTest;
+        window.startModule1 = startModule1;
+        window.startModule2 = startModule2;
+        window.navigateQuestion = navigateQuestion;
+        window.saveAnswer = saveAnswer;
+        window.handleListeningClick = handleListeningClick;
+
+        // Initialize App on Window Load
+        window.addEventListener('DOMContentLoaded', () => {
+            render();
+        });
+    </script>
+</body>
+</html>
