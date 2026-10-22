@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading Section</title>
+    <title>iBT Reading Practice & Assessment System</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Georgia&family=Inter:wght@400;500;600;700&display=swap');
@@ -39,41 +40,50 @@
 
         /* Input styling for fill in the blanks */
         .fill-input {
-            border: 1px solid #cbd5e0;
+            border: 1px solid #94a3b8;
             border-radius: 4px;
-            padding: 2px 6px;
-            font-weight: 600;
+            padding: 1px 4px;
+            font-weight: 700;
             color: #1e3a5f;
-            background-color: #ffffff;
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            background-color: #f8fafc;
+            transition: all 0.15s ease-in-out;
             text-align: center;
+            display: inline-block;
+            margin: 0 1px;
+            text-transform: lowercase;
         }
         .fill-input:focus {
             outline: none;
-            border-color: #21395c;
-            box-shadow: 0 0 0 2px rgba(33, 57, 92, 0.2);
+            border-color: #1e3a5f;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.25);
         }
 
         /* Custom Radio Styling */
         .custom-radio {
-            accent-color: #21395c;
+            accent-color: #1e3a5f;
             width: 1.1rem;
             height: 1.1rem;
             cursor: pointer;
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen relative">
 
     <!-- Navigation Header -->
-    <header class="bg-[#1e3a5f] text-white px-4 md:px-8 py-3.5 flex justify-between items-center shadow-md sticky top-0 z-50">
-        <h1 class="text-base md:text-lg font-bold tracking-wide">Reading Section</h1>
-        <div id="header-subtitle" class="text-xs md:text-sm text-gray-200 font-medium hidden md:block">Welcome</div>
+    <header class="bg-[#1e3a5f] text-white px-4 md:px-8 py-3.5 flex justify-between items-center shadow-md sticky top-0 z-40">
         <div class="flex items-center space-x-3">
-            <button onclick="openTeacherDashboardModal()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs md:text-sm font-semibold px-3 py-1.5 rounded transition-colors shadow-sm">
-                Teacher Dashboard
+            <h1 class="text-base md:text-lg font-bold tracking-wide">iBT Reading Assessment</h1>
+        </div>
+        
+        <div id="header-subtitle" class="text-xs md:text-sm text-gray-200 font-medium hidden md:block">Welcome</div>
+        
+        <div class="flex items-center space-x-3">
+            <button id="teacher-dashboard-btn" onclick="openTeacherDashboardModal()" class="bg-[#2b4c7e] hover:bg-[#172c48] border border-blue-300/30 text-xs md:text-sm text-white px-3 py-1.5 rounded transition-all font-medium flex items-center space-x-1.5 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                <span>Teacher Dashboard</span>
             </button>
-            <div class="border border-blue-300/40 bg-[#172c48] px-4 py-1 rounded text-sm md:text-base font-mono font-semibold tracking-wider text-gray-100 min-w-[75px] text-center" id="timer-display">
+            <div class="border border-blue-300/40 bg-[#172c48] px-3.5 py-1 rounded text-sm md:text-base font-mono font-semibold tracking-wider text-gray-100 min-w-[70px] text-center" id="timer-display">
                 --:--
             </div>
         </div>
@@ -86,37 +96,124 @@
         </div>
     </main>
 
-    <!-- Teacher Dashboard Modal -->
-    <div id="teacher-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-[#1e3a5f] text-white px-6 py-4 flex justify-between items-center">
-                <h3 class="font-bold text-lg">Teacher Dashboard</h3>
-                <button onclick="closeTeacherDashboard()" class="text-gray-300 hover:text-white font-bold text-xl">&times;</button>
+    <!-- Modal: Teacher Password -->
+    <div id="password-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl border border-gray-200 max-w-md w-full p-6 space-y-4 transform transition-all">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                <h3 class="text-lg font-bold text-[#1e3a5f] flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    <span>Teacher Dashboard Access</span>
+                </h3>
+                <button onclick="closePasswordModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             </div>
-            <div id="dashboard-body" class="p-6 overflow-y-auto flex-grow space-y-4">
-                <!-- Password Prompt or Submissions Table -->
+            <p class="text-sm text-gray-600">Please enter the teacher password to view real-time student submissions.</p>
+            <div>
+                <input type="password" id="teacher-password-input" placeholder="Enter password" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                <p id="password-error" class="text-xs text-rose-600 font-semibold mt-1 hidden">Incorrect password. Please try again.</p>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closePasswordModal()" class="px-4 py-2 rounded border border-gray-300 text-gray-600 text-sm hover:bg-gray-50">Cancel</button>
+                <button onclick="verifyTeacherPassword()" class="px-4 py-2 rounded bg-[#1e3a5f] text-white text-sm font-medium hover:bg-[#172c48]">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Teacher Dashboard View -->
+    <div id="dashboard-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-6">
+        <div class="bg-white rounded-lg shadow-2xl border border-gray-200 max-w-5xl w-full h-[90vh] flex flex-col p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                <div>
+                    <h3 class="text-xl font-bold text-[#1e3a5f]">Teacher Submissions Dashboard</h3>
+                    <p class="text-xs text-gray-500">Real-time submissions stored locally in browser session storage</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="clearAllSubmissions()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs px-3 py-1.5 rounded transition-colors font-medium">Clear All Data</button>
+                    <button onclick="closeDashboardModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold ml-2">&times;</button>
+                </div>
+            </div>
+
+            <!-- Submissions Table -->
+            <div class="flex-grow overflow-y-auto border border-gray-200 rounded-lg">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead class="bg-[#1e3a5f] text-white sticky top-0 font-semibold text-xs uppercase tracking-wider">
+                        <tr>
+                            <th class="py-3 px-4">#</th>
+                            <th class="py-3 px-4">Student Name</th>
+                            <th class="py-3 px-4">Submission Date & Time</th>
+                            <th class="py-3 px-4 text-center">Module 1</th>
+                            <th class="py-3 px-4 text-center">Module 2</th>
+                            <th class="py-3 px-4 text-center">Total Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-table-body" class="divide-y divide-gray-200 text-gray-800 bg-white">
+                        <!-- Dynamic Rows Injected -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-xs text-gray-500">
+                <span id="submission-count-label">Total Submissions: 0</span>
+                <button onclick="closeDashboardModal()" class="px-5 py-2 bg-[#1e3a5f] text-white rounded text-sm hover:bg-[#172c48] font-medium">Close Dashboard</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Module Answer Keys
         const m1CorrectAnswers = {
-            1: 'a', 2: 'ii', 3: 'uy', 4: 'oie', 5: 'o', 6: 'ue', 7: 'a', 8: 'a', 9: 'i', 10: 'ai',
-            11: 're', 12: 'mi', 13: 'ua', 14: 'au', 15: 'ic', 16: 'i', 17: 'e', 18: 'ai', 19: 'n', 20: 'e',
+            // Task 1 Passage 1: Urban Heat (Q1-10)
+            1: ['a'],
+            2: ['i', 'i'],
+            3: ['u', 'y'],
+            4: ['o', 'i', 'e'],
+            5: ['u', 'e'],
+            6: ['u', 'e'],
+            7: ['a'],
+            8: ['a'],
+            9: ['i'],
+            10: ['a', 'i'],
+
+            // Task 1 Passage 2: Migratory Birds (Q11-20)
+            11: ['r', 'e'],
+            12: ['m', 'i'],
+            13: ['u', 'a'],
+            14: ['a', 'u'],
+            15: ['i', 'c'],
+            16: ['i'],
+            17: ['e'],
+            18: ['a', 'i'],
+            19: ['n'],
+            20: ['e'],
+
+            // Read in Daily Life (Q21-25)
             21: 'B', 22: 'C', 23: 'C', 24: 'B', 25: 'D',
+
+            // Read an Academic Passage (Q26-35)
             26: 'B', 27: 'A', 28: 'B', 29: 'A', 30: 'B',
             31: 'A', 32: 'A', 33: 'A', 34: 'B', 35: 'B'
         };
 
         const m2CorrectAnswers = {
-            1: 'i', 2: 'o', 3: 'ei', 4: 'o', 5: 'a', 6: 'ra', 7: 'l', 8: 'm', 9: 'a', 10: 'ai',
+            // Coastal Mangroves (Q1-10)
+            1: ['i'],
+            2: ['o'],
+            3: ['e', 'i'],
+            4: ['o'],
+            5: ['a'],
+            6: ['r', 'a'],
+            7: ['l'],
+            8: ['m'],
+            9: ['a'],
+            10: ['a', 'i'],
+
+            // Acoustic Ecology (Q11-15)
             11: 'B', 12: 'A', 13: 'B', 14: 'A', 15: 'B'
         };
 
         const state = {
             studentName: '',
             studentEmail: '',
-            currentStage: 'WELCOME', // WELCOME, M1_START, M1_TEST, M2_START, M2_TEST, END_PHASE_2
+            currentStage: 'WELCOME', // WELCOME, M1_START, M1_TEST, M2_START, M2_TEST, END_PHASE
             m1Index: 0,
             m2Index: 0,
             m1Answers: {}, 
@@ -127,72 +224,71 @@
             m2TimerInterval: null
         };
 
+        // Module 1 Questions Data Structure
         const module1Questions = [
-            // Questions 1-10 Task A Urban Heat and City Design
+            // Urban Heat (Q1-10)
             {
                 id: 1,
                 type: 'FILL',
                 taskTitle: 'Module 1 - Complete the Words (Questions 1-10)',
-                instructions: 'Fill in the missing letters.',
-                passage: `As cities grow, dark roofs and paved roads absorb large amounts of sol<input type="text" data-q="1" class="fill-input w-12" maxlength="3">r energy. This can create an urban heat island, a cond<input type="text" data-q="2" class="fill-input w-12" maxlength="3">t<input type="text" data-q="3" class="fill-input w-12" maxlength="3">on in which built-up areas become warmer than nearby rural regions. Researchers st<input type="text" data-q="4" class="fill-input w-12" maxlength="3">d<input type="text" data-q="5" class="fill-input w-12" maxlength="3"> that trees can reduce this effect because their leaves pr<input type="text" data-q="6" class="fill-input w-12" maxlength="4">v<input type="text" data-q="7" class="fill-input w-12" maxlength="3">d<input type="text" data-q="8" class="fill-input w-12" maxlength="3"> shade and because water released during transpiration cools the air. Some planners are therefore adding green roofs and small parks to dense neighborhoods. These measures do not eliminate heat entirely, but they can red<input type="text" data-q="9" class="fill-input w-12" maxlength="3">c<input type="text" data-q="10" class="fill-input w-12" maxlength="3"> surface temperatures and make outdoor spaces more comfortable. The greatest benefits are often found when vegetation is placed near homes, bus stops, and other locations where people spend time. In addition to cooling, urban trees can tr<input type="text" data-q="11" class="fill-input w-12" maxlength="3">p some air pollutants and make streets more attractive. However, city planners must choose spec<input type="text" data-q="12" class="fill-input w-12" maxlength="3">es carefully because trees require water, space, and long-term maintenance. A successful program therefore depends not simply on planting more trees, but on selecting suitable locations and man<input type="text" data-q="13" class="fill-input w-14" maxlength="5">g<input type="text" data-q="14" class="fill-input w-12" maxlength="3">ng them over time.`,
+                instructions: 'Fill in the missing letters in the paragraph below.',
+                passage: `<strong>Urban Heat and City Design</strong><br><br>As cities grow, dark roofs and paved roads absorb large amounts of sol<input type="text" data-q="1" data-comp="0" class="fill-input w-8" maxlength="2">r energy. This can create an urban heat island, a cond<input type="text" data-q="2" data-comp="0" class="fill-input w-8" maxlength="2">t<input type="text" data-q="2" data-comp="1" class="fill-input w-8" maxlength="2">on in which built-up areas become warmer than nearby rural regions. Researchers st<input type="text" data-q="3" data-comp="0" class="fill-input w-8" maxlength="2">d<input type="text" data-q="3" data-comp="1" class="fill-input w-8" maxlength="2"> that trees can reduce this effect because their leaves pr<input type="text" data-q="4" data-comp="0" class="fill-input w-8" maxlength="2">v<input type="text" data-q="4" data-comp="1" class="fill-input w-8" maxlength="2">d<input type="text" data-q="4" data-comp="2" class="fill-input w-8" maxlength="2"> shade and because water released during transpiration cools the air. Some planners are therefore adding green roofs and small parks to dense neighb<input type="text" data-q="5" data-comp="0" class="fill-input w-8" maxlength="2">rhoods. These measures do not eliminate heat entirely, but they can red<input type="text" data-q="6" data-comp="0" class="fill-input w-8" maxlength="2">c<input type="text" data-q="6" data-comp="1" class="fill-input w-8" maxlength="2"> surface temperatures and make outdoor spaces more comfort<input type="text" data-q="7" data-comp="0" class="fill-input w-8" maxlength="2">ble. The greatest benefits are often found when vegetation is placed near homes, bus stops, and other locations where people spend time. In addition to cooling, urban trees can tr<input type="text" data-q="8" data-comp="0" class="fill-input w-8" maxlength="2">p some air pollutants and make streets more attractive. However, city planners must choose spec<input type="text" data-q="9" data-comp="0" class="fill-input w-8" maxlength="2">es carefully because trees require water, space, and long-term maintenance. A successful program therefore depends not simply on planting more trees, but on selecting suitable locations and man<input type="text" data-q="10" data-comp="0" class="fill-input w-8" maxlength="2">g<input type="text" data-q="10" data-comp="1" class="fill-input w-8" maxlength="2">ng them over time.`,
                 targetQ: 1,
-                targetWord: 'solar',
-                hint: '1. sol_r'
+                hint: 'sol_r'
             },
-            { id: 2, type: 'FILL_GROUP', targetQ: 2, hint: '2. cond_t_on', refGroup: 1 },
-            { id: 3, type: 'FILL_GROUP', targetQ: 3, hint: '3. st_d_', refGroup: 1 },
-            { id: 4, type: 'FILL_GROUP', targetQ: 4, hint: '4. pr_v_d_', refGroup: 1 },
-            { id: 5, type: 'FILL_GROUP', targetQ: 5, hint: '5. neighb_rhoods', refGroup: 1 },
-            { id: 6, type: 'FILL_GROUP', targetQ: 6, hint: '6. red_c_', refGroup: 1 },
-            { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: '7. comfort_ble', refGroup: 1 },
-            { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: '8. tr_p', refGroup: 1 },
-            { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: '9. spec_es', refGroup: 1 },
-            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. man_g_ing', refGroup: 1 },
+            { id: 2, type: 'FILL_GROUP', targetQ: 2, hint: 'cond_t_on', refGroup: 1 },
+            { id: 3, type: 'FILL_GROUP', targetQ: 3, hint: 'st_d_', refGroup: 1 },
+            { id: 4, type: 'FILL_GROUP', targetQ: 4, hint: 'pr_v_d_', refGroup: 1 },
+            { id: 5, type: 'FILL_GROUP', targetQ: 5, hint: 'neighb_rhoods', refGroup: 1 },
+            { id: 6, type: 'FILL_GROUP', targetQ: 6, hint: 'red_c_', refGroup: 1 },
+            { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: 'comfort_ble', refGroup: 1 },
+            { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: 'tr_p', refGroup: 1 },
+            { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: 'spec_es', refGroup: 1 },
+            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: 'man_g_ng', refGroup: 1 },
 
-            // Questions 11-20 Task A Migratory Birds and Navigation
+            // Migratory Birds (Q11-20)
             {
                 id: 11,
                 type: 'FILL',
                 taskTitle: 'Module 1 - Complete the Words (Questions 11-20)',
-                instructions: 'Fill in the missing letters.',
-                passage: `Many migratory birds t<input type="text" data-q="11" class="fill-input w-12" maxlength="3">av<input type="text" data-q="12" class="fill-input w-12" maxlength="3">l thousands of kilometers between breeding and wintering grounds. To remain on course, they appear to co<input type="text" data-q="13" class="fill-input w-12" maxlength="3">b<input type="text" data-q="14" class="fill-input w-12" maxlength="3">ne several navigation cues. Some species use the position of the sun during the day, while others can detect information from Earth’s magnetic field. Experiments with songbirds suggest that young birds may develop acc<input type="text" data-q="15" class="fill-input w-12" maxlength="3">r<input type="text" data-q="16" class="fill-input w-12" maxlength="3">te routes gr<input type="text" data-q="17" class="fill-input w-12" maxlength="3">d<input type="text" data-q="18" class="fill-input w-12" maxlength="3">ally rather than being born with a complete map. During their first migration, inexperienced birds can make errors, but they often become more consistent in later years. Researchers also know that weather affects migration. Strong winds can speed a bird’s journey, whereas storms may force it to change d<input type="text" data-q="19" class="fill-input w-12" maxlength="3">re<input type="text" data-q="20" class="fill-input w-12" maxlength="3">tion or stop temporarily. Scientists st<input type="text" data-q="21" class="fill-input w-12" maxlength="3">ll disagree about exactly how different cues are integrated, but they agree that navigation is a compl<input type="text" data-q="22" class="fill-input w-12" maxlength="3">x process. Understanding that process may help conserv<input type="text" data-q="23" class="fill-input w-14" maxlength="5">t<input type="text" data-q="24" class="fill-input w-12" maxlength="3">onists protect important stopover sites, where birds rest and feed during long jour<input type="text" data-q="25" class="fill-input w-12" maxlength="3">eys. These areas are especially important when birds need to r<input type="text" data-q="26" class="fill-input w-12" maxlength="3">cover energy before continuing their journeys.`,
+                instructions: 'Fill in the missing letters in the paragraph below.',
+                passage: `<strong>Migratory Birds and Navigation</strong><br><br>Many migratory birds t<input type="text" data-q="11" data-comp="0" class="fill-input w-8" maxlength="2">av<input type="text" data-q="11" data-comp="1" class="fill-input w-8" maxlength="2">l thousands of kilometers between breeding and wintering grounds. To remain on course, they appear to co<input type="text" data-q="12" data-comp="0" class="fill-input w-8" maxlength="2">b<input type="text" data-q="12" data-comp="1" class="fill-input w-8" maxlength="2">ne several navigation cues. Some species use the position of the sun during the day, while others can detect information from Earth’s magnetic field. Experiments with songbirds suggest that young birds may develop acc<input type="text" data-q="13" data-comp="0" class="fill-input w-8" maxlength="2">r<input type="text" data-q="13" data-comp="1" class="fill-input w-8" maxlength="2">te routes gr<input type="text" data-q="14" data-comp="0" class="fill-input w-8" maxlength="2">d<input type="text" data-q="14" data-comp="1" class="fill-input w-8" maxlength="2">ally rather than being born with a complete map. During their first migration, inexperienced birds can make errors, but they often become more consistent in later years. Researchers also know that weather affects migration. Strong winds can speed a bird’s journey, whereas storms may force it to change d<input type="text" data-q="15" data-comp="0" class="fill-input w-8" maxlength="2">re<input type="text" data-q="15" data-comp="1" class="fill-input w-8" maxlength="2">tion or stop temporarily. Scientists st<input type="text" data-q="16" data-comp="0" class="fill-input w-8" maxlength="2">ll disagree about exactly how different cues are integrated, but they agree that navigation is a compl<input type="text" data-q="17" data-comp="0" class="fill-input w-8" maxlength="2">x process. Understanding that process may help conserv<input type="text" data-q="18" data-comp="0" class="fill-input w-8" maxlength="2">t<input type="text" data-q="18" data-comp="1" class="fill-input w-8" maxlength="2">onists protect important stopover sites, where birds rest and feed during long jour<input type="text" data-q="19" data-comp="0" class="fill-input w-8" maxlength="2">eys. These areas are especially important when birds need to r<input type="text" data-q="20" data-comp="0" class="fill-input w-8" maxlength="2">cover energy before continuing their journeys.`,
                 targetQ: 11,
-                targetWord: 'travel',
-                hint: '11. t_av_l'
+                hint: 't_av_l'
             },
-            { id: 12, type: 'FILL_GROUP', targetQ: 12, hint: '12. co_b_ne', refGroup: 11 },
-            { id: 13, type: 'FILL_GROUP', targetQ: 13, hint: '13. acc_r_te', refGroup: 11 },
-            { id: 14, type: 'FILL_GROUP', targetQ: 14, hint: '14. gr_d_ally', refGroup: 11 },
-            { id: 15, type: 'FILL_GROUP', targetQ: 15, hint: '15. d_re_tion', refGroup: 11 },
-            { id: 16, type: 'FILL_GROUP', targetQ: 16, hint: '16. st_ll (2)', refGroup: 11 },
-            { id: 17, type: 'FILL_GROUP', targetQ: 17, hint: '17. compl_x', refGroup: 11 },
-            { id: 18, type: 'FILL_GROUP', targetQ: 18, hint: '18. conserv_tionists', refGroup: 11 },
-            { id: 19, type: 'FILL_GROUP', targetQ: 19, hint: '19. jour_eys', refGroup: 11 },
-            { id: 20, type: 'FILL_GROUP', targetQ: 20, hint: '20. r_cover', refGroup: 11 },
+            { id: 12, type: 'FILL_GROUP', targetQ: 12, hint: 'co_b_ne', refGroup: 11 },
+            { id: 13, type: 'FILL_GROUP', targetQ: 13, hint: 'acc_r_te', refGroup: 11 },
+            { id: 14, type: 'FILL_GROUP', targetQ: 14, hint: 'gr_d_ally', refGroup: 11 },
+            { id: 15, type: 'FILL_GROUP', targetQ: 15, hint: 'd_re_tion', refGroup: 11 },
+            { id: 16, type: 'FILL_GROUP', targetQ: 16, hint: 'st_ll', refGroup: 11 },
+            { id: 17, type: 'FILL_GROUP', targetQ: 17, hint: 'compl_x', refGroup: 11 },
+            { id: 18, type: 'FILL_GROUP', targetQ: 18, hint: 'conserv_t_onists', refGroup: 11 },
+            { id: 19, type: 'FILL_GROUP', targetQ: 19, hint: 'jour_eys', refGroup: 11 },
+            { id: 20, type: 'FILL_GROUP', targetQ: 20, hint: 'r_cover', refGroup: 11 },
 
-            // Questions 21-25 Task B Daily Life
+            // Read in Daily Life (Q21-25)
             {
                 id: 21,
                 type: 'MCQ',
-                taskTitle: 'Read in Daily Life',
+                taskTitle: 'Module 1 - Read in Daily Life (Select the best answer)',
                 contextTitle: 'Email from Residence Life',
-                contextText: 'Subject: Shared Kitchen Maintenance<br><br>Hello residents,<br>The second-floor shared kitchen will be unavailable from 2:00 to 5:00 p.m. Wednesday while maintenance staff replace the ventilation filter. You may use the first-floor kitchen during that period. Please remove all personal items from the second-floor counters before noon so that staff can work safely. Thank you for your cooperation.<br>—Residence Life Office',
+                contextText: 'Subject: Shared Kitchen Maintenance<br>Hello residents,<br>The second-floor shared kitchen will be unavailable from 2:00 to 5:00 p.m. Wednesday while maintenance staff replace the ventilation filter. You may use the first-floor kitchen during that period. Please remove all personal items from the second-floor counters before noon so that staff can work safely. Thank you for your cooperation.<br>—Residence Life Office',
                 question: '21. Why will the second-floor kitchen be closed?',
                 options: ['A. A new refrigerator will be installed.', 'B. Ventilation equipment will be serviced.', 'C. Students will attend a safety workshop.', 'D. The floor will be repainted.']
             },
             {
                 id: 22,
                 type: 'MCQ',
-                taskTitle: 'Read in Daily Life',
+                taskTitle: 'Module 1 - Read in Daily Life (Select the best answer)',
                 contextTitle: 'Email from Residence Life',
-                contextText: 'Subject: Shared Kitchen Maintenance<br><br>Hello residents,<br>The second-floor shared kitchen will be unavailable from 2:00 to 5:00 p.m. Wednesday while maintenance staff replace the ventilation filter. You may use the first-floor kitchen during that period. Please remove all personal items from the second-floor counters before noon so that staff can work safely. Thank you for your cooperation.<br>—Residence Life Office',
+                contextText: 'Subject: Shared Kitchen Maintenance<br>Hello residents,<br>The second-floor shared kitchen will be unavailable from 2:00 to 5:00 p.m. Wednesday while maintenance staff replace the ventilation filter. You may use the first-floor kitchen during that period. Please remove all personal items from the second-floor counters before noon so that staff can work safely. Thank you for your cooperation.<br>—Residence Life Office',
                 question: '22. What are residents asked to do before noon?',
                 options: ['A. Move to another residence hall.', 'B. Reserve the first-floor kitchen.', 'C. Clear personal belongings from the counters.', 'D. Meet with maintenance staff.']
             },
             {
                 id: 23,
                 type: 'MCQ',
-                taskTitle: 'Read in Daily Life',
+                taskTitle: 'Module 1 - Read in Daily Life (Select the best answer)',
                 contextTitle: 'Course Notice',
                 contextText: 'SOC 210 Research Methods<br>Reminder: The library workshop on finding peer-reviewed sources has moved from Room 204 to Room 118 because of a scheduling conflict. The session still begins at 3:30 p.m. Students who cannot attend may use the library guide posted on the course website.',
                 question: '23. What has changed?',
@@ -201,7 +297,7 @@
             {
                 id: 24,
                 type: 'MCQ',
-                taskTitle: 'Read in Daily Life',
+                taskTitle: 'Module 1 - Read in Daily Life (Questions 24-25)',
                 contextTitle: 'Student Organization Post',
                 contextText: 'Campus Garden Volunteers<br>We are meeting Saturday at 9:00 a.m. to prepare the east courtyard for the spring planting project. Gloves and hand tools will be available, but volunteers should bring a water bottle. We will finish by noon. New volunteers are welcome, and no gardening experience is required.',
                 question: '24. What should volunteers bring?',
@@ -210,18 +306,18 @@
             {
                 id: 25,
                 type: 'MCQ',
-                taskTitle: 'Read in Daily Life',
+                taskTitle: 'Module 1 - Read in Daily Life (Questions 24-25)',
                 contextTitle: 'Student Organization Post',
                 contextText: 'Campus Garden Volunteers<br>We are meeting Saturday at 9:00 a.m. to prepare the east courtyard for the spring planting project. Gloves and hand tools will be available, but volunteers should bring a water bottle. We will finish by noon. New volunteers are welcome, and no gardening experience is required.',
                 question: '25. Which statement about volunteers is true?',
                 options: ['A. They must have previous gardening experience.', 'B. They must stay until 3:00 p.m.', 'C. They should register a week in advance.', 'D. People with no gardening experience may participate.']
             },
 
-            // Questions 26-35 Task C Academic Passages
+            // Read an Academic Passage (Q26-30) Seed Banks
             {
                 id: 26,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 26-30)',
                 contextTitle: 'Seed Banks and Crop Diversity',
                 contextText: `Modern agriculture relies heavily on a relatively small number of crop varieties, even though thousands of varieties have been developed over centuries. This narrowing of diversity can create risks because a disease or environmental change that affects one widely planted variety may affect farms across a large area. Seed banks are one response to this problem. They collect, catalog, and preserve seeds so that researchers and farmers can use genetic material in the future.<br><br>Seed banks do more than store seeds in cold rooms. Staff must document where each sample originated, maintain suitable storage conditions, and periodically test whether seeds can still germinate. Some seeds remain viable for decades, whereas others lose their ability to germinate more quickly. In addition, a seed bank is useful only if preserved material can be accessed and reproduced when necessary. For this reason, many institutions cooperate with universities, agricultural agencies, and farming communities.<br><br>The value of a seed bank becomes especially clear when a crop variety disappears from fields. Researchers can sometimes use preserved material to reintroduce a trait such as drought tolerance, resistance to a particular disease, or adaptation to a local climate. However, seed banks are not a complete substitute for living agricultural diversity. A variety that survives only in storage is not being tested under current conditions, and the knowledge required to cultivate it may also be lost. Conservationists therefore increasingly support both seed storage and continued cultivation of diverse crops in farms and community gardens.`,
                 question: "26. The word 'narrowing' in the passage is closest in meaning to",
@@ -230,7 +326,7 @@
             {
                 id: 27,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 26-30)',
                 contextTitle: 'Seed Banks and Crop Diversity',
                 contextText: `Modern agriculture relies heavily on a relatively small number of crop varieties, even though thousands of varieties have been developed over centuries. This narrowing of diversity can create risks because a disease or environmental change that affects one widely planted variety may affect farms across a large area. Seed banks are one response to this problem. They collect, catalog, and preserve seeds so that researchers and farmers can use genetic material in the future.<br><br>Seed banks do more than store seeds in cold rooms. Staff must document where each sample originated, maintain suitable storage conditions, and periodically test whether seeds can still germinate. Some seeds remain viable for decades, whereas others lose their ability to germinate more quickly. In addition, a seed bank is useful only if preserved material can be accessed and reproduced when necessary. For this reason, many institutions cooperate with universities, agricultural agencies, and farming communities.<br><br>The value of a seed bank becomes especially clear when a crop variety disappears from fields. Researchers can sometimes use preserved material to reintroduce a trait such as drought tolerance, resistance to a particular disease, or adaptation to a local climate. However, seed banks are not a complete substitute for living agricultural diversity. A variety that survives only in storage is not being tested under current conditions, and the knowledge required to cultivate it may also be lost. Conservationists therefore increasingly support both seed storage and continued cultivation of diverse crops in farms and community gardens.`,
                 question: '27. Why does the author mention that staff must document where samples originated?',
@@ -239,7 +335,7 @@
             {
                 id: 28,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 26-30)',
                 contextTitle: 'Seed Banks and Crop Diversity',
                 contextText: `Modern agriculture relies heavily on a relatively small number of crop varieties, even though thousands of varieties have been developed over centuries. This narrowing of diversity can create risks because a disease or environmental change that affects one widely planted variety may affect farms across a large area. Seed banks are one response to this problem. They collect, catalog, and preserve seeds so that researchers and farmers can use genetic material in the future.<br><br>Seed banks do more than store seeds in cold rooms. Staff must document where each sample originated, maintain suitable storage conditions, and periodically test whether seeds can still germinate. Some seeds remain viable for decades, whereas others lose their ability to germinate more quickly. In addition, a seed bank is useful only if preserved material can be accessed and reproduced when necessary. For this reason, many institutions cooperate with universities, agricultural agencies, and farming communities.<br><br>The value of a seed bank becomes especially clear when a crop variety disappears from fields. Researchers can sometimes use preserved material to reintroduce a trait such as drought tolerance, resistance to a particular disease, or adaptation to a local climate. However, seed banks are not a complete substitute for living agricultural diversity. A variety that survives only in storage is not being tested under current conditions, and the knowledge required to cultivate it may also be lost. Conservationists therefore increasingly support both seed storage and continued cultivation of diverse crops in farms and community gardens.`,
                 question: '28. What can be inferred about a crop variety that is stored but no longer cultivated?',
@@ -248,7 +344,7 @@
             {
                 id: 29,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 26-30)',
                 contextTitle: 'Seed Banks and Crop Diversity',
                 contextText: `Modern agriculture relies heavily on a relatively small number of crop varieties, even though thousands of varieties have been developed over centuries. This narrowing of diversity can create risks because a disease or environmental change that affects one widely planted variety may affect farms across a large area. Seed banks are one response to this problem. They collect, catalog, and preserve seeds so that researchers and farmers can use genetic material in the future.<br><br>Seed banks do more than store seeds in cold rooms. Staff must document where each sample originated, maintain suitable storage conditions, and periodically test whether seeds can still germinate. Some seeds remain viable for decades, whereas others lose their ability to germinate more quickly. In addition, a seed bank is useful only if preserved material can be accessed and reproduced when necessary. For this reason, many institutions cooperate with universities, agricultural agencies, and farming communities.<br><br>The value of a seed bank becomes especially clear when a crop variety disappears from fields. Researchers can sometimes use preserved material to reintroduce a trait such as drought tolerance, resistance to a particular disease, or adaptation to a local climate. However, seed banks are not a complete substitute for living agricultural diversity. A variety that survives only in storage is not being tested under current conditions, and the knowledge required to cultivate it may also be lost. Conservationists therefore increasingly support both seed storage and continued cultivation of diverse crops in farms and community gardens.`,
                 question: '29. Why does the author discuss traits such as drought tolerance?',
@@ -257,16 +353,18 @@
             {
                 id: 30,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 26-30)',
                 contextTitle: 'Seed Banks and Crop Diversity',
                 contextText: `Modern agriculture relies heavily on a relatively small number of crop varieties, even though thousands of varieties have been developed over centuries. This narrowing of diversity can create risks because a disease or environmental change that affects one widely planted variety may affect farms across a large area. Seed banks are one response to this problem. They collect, catalog, and preserve seeds so that researchers and farmers can use genetic material in the future.<br><br>Seed banks do more than store seeds in cold rooms. Staff must document where each sample originated, maintain suitable storage conditions, and periodically test whether seeds can still germinate. Some seeds remain viable for decades, whereas others lose their ability to germinate more quickly. In addition, a seed bank is useful only if preserved material can be accessed and reproduced when necessary. For this reason, many institutions cooperate with universities, agricultural agencies, and farming communities.<br><br>The value of a seed bank becomes especially clear when a crop variety disappears from fields. Researchers can sometimes use preserved material to reintroduce a trait such as drought tolerance, resistance to a particular disease, or adaptation to a local climate. However, seed banks are not a complete substitute for living agricultural diversity. A variety that survives only in storage is not being tested under current conditions, and the knowledge required to cultivate it may also be lost. Conservationists therefore increasingly support both seed storage and continued cultivation of diverse crops in farms and community gardens.`,
                 question: '30. Which statement best expresses the organization of the passage?',
                 options: ['A. It presents a historical debate and then argues for one side.', 'B. It introduces a problem, explains one solution, and discusses why another approach is also necessary.', 'C. It compares two unrelated types of agricultural research.', 'D. It describes several seed-bank failures and proposes a new storage method.']
             },
+
+            // Read an Academic Passage (Q31-35) Why Some Wetlands Recover Slowly
             {
                 id: 31,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 31-35)',
                 contextTitle: 'Why Some Wetlands Recover Slowly',
                 contextText: `Wetlands are often described as resilient ecosystems because many can recover after flooding, fire, or temporary changes in water levels. Yet recovery is not always rapid. In some wetlands, the visible return of plants may occur within a few seasons while important ecological functions take much longer to return.<br><br>One reason is that wetlands depend on interactions among soil, water, plants, microorganisms, and animals. When a wetland is drained or heavily disturbed, its soil may lose organic material and change chemically. Even after water returns, the soil may no longer provide the same conditions for seeds to germinate or for microorganisms to function. Some species can recolonize quickly, while others depend on organisms or nutrients that are still absent.<br><br>Scientists therefore distinguish between structural recovery and functional recovery. Structural recovery refers to the return of visible features such as plant cover. Functional recovery involves the return of processes such as nutrient cycling, water filtration, and habitat provision. A wetland may appear healthy while still performing these functions less effectively than it did before disturbance. Long-term monitoring is consequently important. Researchers may need to measure water chemistry, soil properties, and animal populations for years before concluding that an ecosystem has fully recovered.`,
                 question: "31. The word 'resilient' in the passage is closest in meaning to",
@@ -275,7 +373,7 @@
             {
                 id: 32,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 31-35)',
                 contextTitle: 'Why Some Wetlands Recover Slowly',
                 contextText: `Wetlands are often described as resilient ecosystems because many can recover after flooding, fire, or temporary changes in water levels. Yet recovery is not always rapid. In some wetlands, the visible return of plants may occur within a few seasons while important ecological functions take much longer to return.<br><br>One reason is that wetlands depend on interactions among soil, water, plants, microorganisms, and animals. When a wetland is drained or heavily disturbed, its soil may lose organic material and change chemically. Even after water returns, the soil may no longer provide the same conditions for seeds to germinate or for microorganisms to function. Some species can recolonize quickly, while others depend on organisms or nutrients that are still absent.<br><br>Scientists therefore distinguish between structural recovery and functional recovery. Structural recovery refers to the return of visible features such as plant cover. Functional recovery involves the return of processes such as nutrient cycling, water filtration, and habitat provision. A wetland may appear healthy while still performing these functions less effectively than it did before disturbance. Long-term monitoring is consequently important. Researchers may need to measure water chemistry, soil properties, and animal populations for years before concluding that an ecosystem has fully recovered.`,
                 question: '32. According to the passage, what may happen after water returns to a disturbed wetland?',
@@ -284,7 +382,7 @@
             {
                 id: 33,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 31-35)',
                 contextTitle: 'Why Some Wetlands Recover Slowly',
                 contextText: `Wetlands are often described as resilient ecosystems because many can recover after flooding, fire, or temporary changes in water levels. Yet recovery is not always rapid. In some wetlands, the visible return of plants may occur within a few seasons while important ecological functions take much longer to return.<br><br>One reason is that wetlands depend on interactions among soil, water, plants, microorganisms, and animals. When a wetland is drained or heavily disturbed, its soil may lose organic material and change chemically. Even after water returns, the soil may no longer provide the same conditions for seeds to germinate or for microorganisms to function. Some species can recolonize quickly, while others depend on organisms or nutrients that are still absent.<br><br>Scientists therefore distinguish between structural recovery and functional recovery. Structural recovery refers to the return of visible features such as plant cover. Functional recovery involves the return of processes such as nutrient cycling, water filtration, and habitat provision. A wetland may appear healthy while still performing these functions less effectively than it did before disturbance. Long-term monitoring is consequently important. Researchers may need to measure water chemistry, soil properties, and animal populations for years before concluding that an ecosystem has fully recovered.`,
                 question: '33. What is the difference between structural recovery and functional recovery?',
@@ -293,7 +391,7 @@
             {
                 id: 34,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 31-35)',
                 contextTitle: 'Why Some Wetlands Recover Slowly',
                 contextText: `Wetlands are often described as resilient ecosystems because many can recover after flooding, fire, or temporary changes in water levels. Yet recovery is not always rapid. In some wetlands, the visible return of plants may occur within a few seasons while important ecological functions take much longer to return.<br><br>One reason is that wetlands depend on interactions among soil, water, plants, microorganisms, and animals. When a wetland is drained or heavily disturbed, its soil may lose organic material and change chemically. Even after water returns, the soil may no longer provide the same conditions for seeds to germinate or for microorganisms to function. Some species can recolonize quickly, while others depend on organisms or nutrients that are still absent.<br><br>Scientists therefore distinguish between structural recovery and functional recovery. Structural recovery refers to the return of visible features such as plant cover. Functional recovery involves the return of processes such as nutrient cycling, water filtration, and habitat provision. A wetland may appear healthy while still performing these functions less effectively than it did before disturbance. Long-term monitoring is consequently important. Researchers may need to measure water chemistry, soil properties, and animal populations for years before concluding that an ecosystem has fully recovered.`,
                 question: '34. Why does the author mention water chemistry and animal populations?',
@@ -302,7 +400,7 @@
             {
                 id: 35,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 1 - Read an Academic Passage (Questions 31-35)',
                 contextTitle: 'Why Some Wetlands Recover Slowly',
                 contextText: `Wetlands are often described as resilient ecosystems because many can recover after flooding, fire, or temporary changes in water levels. Yet recovery is not always rapid. In some wetlands, the visible return of plants may occur within a few seasons while important ecological functions take much longer to return.<br><br>One reason is that wetlands depend on interactions among soil, water, plants, microorganisms, and animals. When a wetland is drained or heavily disturbed, its soil may lose organic material and change chemically. Even after water returns, the soil may no longer provide the same conditions for seeds to germinate or for microorganisms to function. Some species can recolonize quickly, while others depend on organisms or nutrients that are still absent.<br><br>Scientists therefore distinguish between structural recovery and functional recovery. Structural recovery refers to the return of visible features such as plant cover. Functional recovery involves the return of processes such as nutrient cycling, water filtration, and habitat provision. A wetland may appear healthy while still performing these functions less effectively than it did before disturbance. Long-term monitoring is consequently important. Researchers may need to measure water chemistry, soil properties, and animal populations for years before concluding that an ecosystem has fully recovered.`,
                 question: '35. What can be inferred about a wetland that has regained plant cover but not its previous nutrient-cycling ability?',
@@ -310,33 +408,33 @@
             }
         ];
 
+        // Module 2 Questions Data Structure
         const module2Questions = [
-            // Questions 1-10 Task A Coastal Mangroves
+            // Coastal Mangroves (Q1-10)
             {
                 id: 1,
                 type: 'FILL',
                 taskTitle: 'Module 2 - Complete the Words (Questions 1-10)',
-                instructions: 'Fill in the missing letters.',
-                passage: `Mangrove forests grow along tropical and subtropical coastl<input type="text" data-q="1" class="fill-input w-12" maxlength="3">nes. Their tangled roots can reduce the force of waves, helping to protect shorelines from er<input type="text" data-q="2" class="fill-input w-12" maxlength="3">sion. Mangroves also provide br<input type="text" data-q="3" class="fill-input w-12" maxlength="3">ed<input type="text" data-q="4" class="fill-input w-12" maxlength="3">ng areas for fish and other aquatic organisms. Researchers have found that these forests can store large amounts of carb<input type="text" data-q="5" class="fill-input w-12" maxlength="3">n in both their veget<input type="text" data-q="6" class="fill-input w-12" maxlength="3">tion and the soil beneath them. However, mangroves are th<input type="text" data-q="7" class="fill-input w-12" maxlength="3">e<input type="text" data-q="8" class="fill-input w-12" maxlength="3">tened by coastal construction, pol<input type="text" data-q="9" class="fill-input w-12" maxlength="3">ution, and changes in water flow. Restoration projects are most successful when they restore natural tidal patterns rather than simply planting young trees. This is because mangrove seedlings need suitable conditions for roots to develop and for sedi<input type="text" data-q="10" class="fill-input w-12" maxlength="3">ent to accumulate. Communities may also benefit from mangroves because healthy coastal forests can support fisheries and protect infr<input type="text" data-q="11" class="fill-input w-12" maxlength="3">structure. In some regions, conservation groups now combine scientific monit<input type="text" data-q="12" class="fill-input w-12" maxlength="3">ring with local knowledge to decide where restoration is most likely to succeed. Such cooper<input type="text" data-q="13" class="fill-input w-12" maxlength="3">t<input type="text" data-q="14" class="fill-input w-12" maxlength="3">on can improve long-term management and reduce the risk that restored areas will again be damaged.`,
+                instructions: 'Fill in the missing letters in the paragraph below.',
+                passage: `<strong>Coastal Mangroves</strong><br><br>Mangrove forests grow along tropical and subtropical coastl<input type="text" data-q="1" data-comp="0" class="fill-input w-8" maxlength="2">nes. Their tangled roots can reduce the force of waves, helping to protect shorelines from er<input type="text" data-q="2" data-comp="0" class="fill-input w-8" maxlength="2">sion. Mangroves also provide br<input type="text" data-q="3" data-comp="0" class="fill-input w-8" maxlength="2">ed<input type="text" data-q="3" data-comp="1" class="fill-input w-8" maxlength="2">ng areas for fish and other aquatic organisms. Researchers have found that these forests can store large amounts of carb<input type="text" data-q="4" data-comp="0" class="fill-input w-8" maxlength="2">n in both their veget<input type="text" data-q="5" data-comp="0" class="fill-input w-8" maxlength="2">tion and the soil beneath them. However, mangroves are th<input type="text" data-q="6" data-comp="0" class="fill-input w-8" maxlength="2">e<input type="text" data-q="6" data-comp="1" class="fill-input w-8" maxlength="2">tened by coastal construction, pol<input type="text" data-q="7" data-comp="0" class="fill-input w-8" maxlength="2">ution, and changes in water flow. Restoration projects are most successful when they restore natural tidal patterns rather than simply planting young trees. This is because mangrove seedlings need suitable conditions for roots to develop and for sedi<input type="text" data-q="8" data-comp="0" class="fill-input w-8" maxlength="2">ent to accumulate. Communities may also benefit from mangroves because healthy coastal forests can support fisheries and protect infr<input type="text" data-q="9" data-comp="0" class="fill-input w-8" maxlength="2">structure. In some regions, conservation groups now combine scientific monitoring with local knowledge to decide where restoration is most likely to succeed. Such cooper<input type="text" data-q="10" data-comp="0" class="fill-input w-8" maxlength="2">t<input type="text" data-q="10" data-comp="1" class="fill-input w-8" maxlength="2">on can improve long-term management and reduce the risk that restored areas will again be damaged.`,
                 targetQ: 1,
-                targetWord: 'coastlines',
-                hint: '1. coastl_nes'
+                hint: 'coastl_nes'
             },
-            { id: 2, type: 'FILL_GROUP', targetQ: 2, hint: '2. er_osion', refGroup: 1 },
-            { id: 3, type: 'FILL_GROUP', targetQ: 3, hint: '3. br_ed_ng', refGroup: 1 },
-            { id: 4, type: 'FILL_GROUP', targetQ: 4, hint: '4. carb_n', refGroup: 1 },
-            { id: 5, type: 'FILL_GROUP', targetQ: 5, hint: '5. veget_tion', refGroup: 1 },
-            { id: 6, type: 'FILL_GROUP', targetQ: 6, hint: '6. th_e_tened', refGroup: 1 },
-            { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: '7. pol_ution', refGroup: 1 },
-            { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: '8. sedi_ent', refGroup: 1 },
-            { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: '9. infr_structure', refGroup: 1 },
-            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: '10. cooper_t_on', refGroup: 1 },
+            { id: 2, type: 'FILL_GROUP', targetQ: 2, hint: 'er_sion', refGroup: 1 },
+            { id: 3, type: 'FILL_GROUP', targetQ: 3, hint: 'br_ed_ng', refGroup: 1 },
+            { id: 4, type: 'FILL_GROUP', targetQ: 4, hint: 'carb_n', refGroup: 1 },
+            { id: 5, type: 'FILL_GROUP', targetQ: 5, hint: 'veget_tion', refGroup: 1 },
+            { id: 6, type: 'FILL_GROUP', targetQ: 6, hint: 'th_e_tened', refGroup: 1 },
+            { id: 7, type: 'FILL_GROUP', targetQ: 7, hint: 'pol_ution', refGroup: 1 },
+            { id: 8, type: 'FILL_GROUP', targetQ: 8, hint: 'sedi_ent', refGroup: 1 },
+            { id: 9, type: 'FILL_GROUP', targetQ: 9, hint: 'infr_structure', refGroup: 1 },
+            { id: 10, type: 'FILL_GROUP', targetQ: 10, hint: 'cooper_t_on', refGroup: 1 },
 
-            // Questions 11-15 Acoustic Ecology in Cities
+            // Acoustic Ecology in Cities (Q11-15)
             {
                 id: 11,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 2 - Read an Academic Passage (Questions 11-15)',
                 contextTitle: 'Acoustic Ecology in Cities',
                 contextText: `Urban soundscapes contain information about how people, transportation systems, animals, and buildings interact. For decades, environmental noise was mainly treated as a problem to be reduced, but researchers in acoustic ecology have asked a broader question: what can patterns of sound reveal about an urban environment?<br><br>One approach is to record sound at multiple locations and times. A busy intersection may have a predictable daily pattern, while a park may contain a changing mixture of bird calls, human voices, and mechanical sounds. Researchers can compare these recordings to identify changes that are difficult to detect through visual observation alone. For example, the sudden disappearance of certain bird calls may indicate a change in habitat use or a disturbance that has not yet become obvious.<br><br>However, interpreting sound is not straightforward. A loud sound is not necessarily an indicator of environmental damage, and a quiet location is not necessarily healthy. Researchers must consider context, including weather, time of day, and the purpose of nearby spaces. Some projects therefore use automated analysis to classify sounds while still relying on human interpretation for unusual events. The field is increasingly used in environmental monitoring, urban planning, and even heritage research, where changes in characteristic sounds may provide evidence of how a place has evolved.`,
                 question: '11. The passage suggests that acoustic ecology differs from older approaches because it',
@@ -345,7 +443,7 @@
             {
                 id: 12,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 2 - Read an Academic Passage (Questions 11-15)',
                 contextTitle: 'Acoustic Ecology in Cities',
                 contextText: `Urban soundscapes contain information about how people, transportation systems, animals, and buildings interact. For decades, environmental noise was mainly treated as a problem to be reduced, but researchers in acoustic ecology have asked a broader question: what can patterns of sound reveal about an urban environment?<br><br>One approach is to record sound at multiple locations and times. A busy intersection may have a predictable daily pattern, while a park may contain a changing mixture of bird calls, human voices, and mechanical sounds. Researchers can compare these recordings to identify changes that are difficult to detect through visual observation alone. For example, the sudden disappearance of certain bird calls may indicate a change in habitat use or a disturbance that has not yet become obvious.<br><br>However, interpreting sound is not straightforward. A loud sound is not necessarily an indicator of environmental damage, and a quiet location is not necessarily healthy. Researchers must consider context, including weather, time of day, and the purpose of nearby spaces. Some projects therefore use automated analysis to classify sounds while still relying on human interpretation for unusual events. The field is increasingly used in environmental monitoring, urban planning, and even heritage research, where changes in characteristic sounds may provide evidence of how a place has evolved.`,
                 question: '12. Why does the author mention the disappearance of bird calls?',
@@ -354,7 +452,7 @@
             {
                 id: 13,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 2 - Read an Academic Passage (Questions 11-15)',
                 contextTitle: 'Acoustic Ecology in Cities',
                 contextText: `Urban soundscapes contain information about how people, transportation systems, animals, and buildings interact. For decades, environmental noise was mainly treated as a problem to be reduced, but researchers in acoustic ecology have asked a broader question: what can patterns of sound reveal about an urban environment?<br><br>One approach is to record sound at multiple locations and times. A busy intersection may have a predictable daily pattern, while a park may contain a changing mixture of bird calls, human voices, and mechanical sounds. Researchers can compare these recordings to identify changes that are difficult to detect through visual observation alone. For example, the sudden disappearance of certain bird calls may indicate a change in habitat use or a disturbance that has not yet become obvious.<br><br>However, interpreting sound is not straightforward. A loud sound is not necessarily an indicator of environmental damage, and a quiet location is not necessarily healthy. Researchers must consider context, including weather, time of day, and the purpose of nearby spaces. Some projects therefore use automated analysis to classify sounds while still relying on human interpretation for unusual events. The field is increasingly used in environmental monitoring, urban planning, and even heritage research, where changes in characteristic sounds may provide evidence of how a place has evolved.`,
                 question: '13. What can be inferred about a quiet location?',
@@ -363,7 +461,7 @@
             {
                 id: 14,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 2 - Read an Academic Passage (Questions 11-15)',
                 contextTitle: 'Acoustic Ecology in Cities',
                 contextText: `Urban soundscapes contain information about how people, transportation systems, animals, and buildings interact. For decades, environmental noise was mainly treated as a problem to be reduced, but researchers in acoustic ecology have asked a broader question: what can patterns of sound reveal about an urban environment?<br><br>One approach is to record sound at multiple locations and times. A busy intersection may have a predictable daily pattern, while a park may contain a changing mixture of bird calls, human voices, and mechanical sounds. Researchers can compare these recordings to identify changes that are difficult to detect through visual observation alone. For example, the sudden disappearance of certain bird calls may indicate a change in habitat use or a disturbance that has not yet become obvious.<br><br>However, interpreting sound is not straightforward. A loud sound is not necessarily an indicator of environmental damage, and a quiet location is not necessarily healthy. Researchers must consider context, including weather, time of day, and the purpose of nearby spaces. Some projects therefore use automated analysis to classify sounds while still relying on human interpretation for unusual events. The field is increasingly used in environmental monitoring, urban planning, and even heritage research, where changes in characteristic sounds may provide evidence of how a place has evolved.`,
                 question: '14. Why does the author say that researchers consider weather and time of day?',
@@ -372,7 +470,7 @@
             {
                 id: 15,
                 type: 'MCQ',
-                taskTitle: 'Read an Academic Passage',
+                taskTitle: 'Module 2 - Read an Academic Passage (Questions 11-15)',
                 contextTitle: 'Acoustic Ecology in Cities',
                 contextText: `Urban soundscapes contain information about how people, transportation systems, animals, and buildings interact. For decades, environmental noise was mainly treated as a problem to be reduced, but researchers in acoustic ecology have asked a broader question: what can patterns of sound reveal about an urban environment?<br><br>One approach is to record sound at multiple locations and times. A busy intersection may have a predictable daily pattern, while a park may contain a changing mixture of bird calls, human voices, and mechanical sounds. Researchers can compare these recordings to identify changes that are difficult to detect through visual observation alone. For example, the sudden disappearance of certain bird calls may indicate a change in habitat use or a disturbance that has not yet become obvious.<br><br>However, interpreting sound is not straightforward. A loud sound is not necessarily an indicator of environmental damage, and a quiet location is not necessarily healthy. Researchers must consider context, including weather, time of day, and the purpose of nearby spaces. Some projects therefore use automated analysis to classify sounds while still relying on human interpretation for unusual events. The field is increasingly used in environmental monitoring, urban planning, and even heritage research, where changes in characteristic sounds may provide evidence of how a place has evolved.`,
                 question: '15. Which of the following best summarizes the passage?',
@@ -380,6 +478,7 @@
             }
         ];
 
+        // Rendering Core UI
         function render() {
             const card = document.getElementById('app-card');
             const subTitle = document.getElementById('header-subtitle');
@@ -389,7 +488,13 @@
                 updateTimerDisplay('--:--');
                 card.innerHTML = `
                     <div class="space-y-6">
-                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Reading Section</h2>
+                        <div class="flex justify-between items-start border-b border-gray-200 pb-4">
+                            <div>
+                                <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Reading Section</h2>
+                                <p class="text-sm text-gray-500 mt-1">Official Test Format Assessment</p>
+                            </div>
+                        </div>
+                        
                         <p class="text-gray-700 leading-relaxed text-sm md:text-base">
                             This test has two timed modules. Within a module you can move forward and back between questions using Next and Back. Once you begin Module 2, you will not be able to return to Module 1.
                         </p>
@@ -423,17 +528,17 @@
                         <!-- User Info Form -->
                         <div class="space-y-4 pt-2 max-w-md">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your name <span class="text-rose-600">*</span></label>
-                                <input type="text" id="input-name" value="${escapeHtml(state.studentName)}" placeholder="e.g. Alex Kim" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your Full Name <span class="text-rose-600">*</span></label>
+                                <input type="text" id="input-name" value="${escapeHtml(state.studentName)}" placeholder="e.g. Jane Doe" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email (optional)</label>
-                                <input type="email" id="input-email" value="${escapeHtml(state.studentEmail)}" placeholder="e.g. alex@example.com" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
+                                <input type="email" id="input-email" value="${escapeHtml(state.studentEmail)}" placeholder="e.g. student@university.edu" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#1e3a5f] text-sm">
                             </div>
                         </div>
 
                         <div id="validation-msg" class="text-xs text-rose-600 font-medium hidden">
-                            Please enter your name to begin the test.
+                            Please enter your full name before starting the test.
                         </div>
 
                         <div class="pt-2">
@@ -489,24 +594,43 @@
             } else if (state.currentStage === 'M2_TEST') {
                 subTitle.textContent = 'Reading Module 2';
                 renderQuestionView(module2Questions, state.m2Index, 2);
-            } else if (state.currentStage === 'END_PHASE_2') {
+            } else if (state.currentStage === 'END_PHASE') {
                 subTitle.textContent = 'Reading Section Complete';
-                updateTimerDisplay('--:--');
+                updateTimerDisplay('00:00');
+                
+                const m1Score = calculateModuleScore(1);
+                const m2Score = calculateModuleScore(2);
+                const totalScore = m1Score + m2Score;
+
                 card.innerHTML = `
                     <div class="space-y-6 max-w-xl">
-                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Thank You</h2>
+                        <h2 class="serif-title text-3xl md:text-4xl text-[#1e3a5f] font-normal">Reading Section Complete</h2>
                         <p class="text-gray-700 text-sm md:text-base">
-                            You have completed the Reading section of the test, <span class="font-semibold">${escapeHtml(state.studentName || 'Student')}</span>. Your submission has been saved successfully in real time.
+                            Thank you, <span class="font-bold text-gray-900">${escapeHtml(state.studentName || 'Student')}</span>. Your responses have been recorded and sent to the Teacher Dashboard in real time.
                         </p>
                         
-                        <div class="bg-blue-50 border border-blue-200 p-4 rounded text-[#1e3a5f] text-sm font-medium flex items-center space-x-2">
-                            <svg class="w-5 h-5 text-[#2b4c7e] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Score recorded and sent to dashboard.</span>
+                        <!-- Summary Card -->
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-lg space-y-3">
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Test Results Summary</h3>
+                            <div class="grid grid-cols-3 gap-3 text-center">
+                                <div class="bg-white p-3 rounded border border-gray-200">
+                                    <span class="block text-xs text-gray-500 font-medium">Module 1</span>
+                                    <span class="text-lg font-bold text-[#1e3a5f]">${m1Score} / 35</span>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-gray-200">
+                                    <span class="block text-xs text-gray-500 font-medium">Module 2</span>
+                                    <span class="text-lg font-bold text-[#1e3a5f]">${m2Score} / 15</span>
+                                </div>
+                                <div class="bg-[#1e3a5f] text-white p-3 rounded shadow-sm">
+                                    <span class="block text-xs text-gray-200 font-medium">Total Score</span>
+                                    <span class="text-lg font-bold">${totalScore} / 50</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="pt-2">
-                            <button onclick="handleListeningClick()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
-                                Continue to Listening Section
+                            <button onclick="location.reload()" class="bg-[#2b4c7e] hover:bg-[#1e3a5f] text-white font-medium px-6 py-2.5 rounded text-sm transition-colors shadow-sm">
+                                Return to Start
                             </button>
                         </div>
                     </div>
@@ -520,6 +644,7 @@
             const isLast = index === questions.length - 1;
             const answers = moduleNum === 1 ? state.m1Answers : state.m2Answers;
 
+            // Find parent question for FILL_GROUP
             let activeQ = q;
             if (q.type === 'FILL_GROUP') {
                 activeQ = questions.find(item => item.id === q.refGroup);
@@ -532,11 +657,11 @@
                     <div class="space-y-4">
                         <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">${activeQ.taskTitle}</h3>
                         <p class="text-xs text-gray-600 italic">${activeQ.instructions}</p>
-                        <div class="bg-[#fdfcf7] border border-amber-200/80 p-5 rounded text-sm leading-relaxed text-gray-800 space-y-2 max-h-[320px] overflow-y-auto">
+                        <div class="bg-[#fdfcf7] border border-amber-200/80 p-5 rounded text-sm leading-relaxed text-gray-800 space-y-2">
                             ${activeQ.passage}
                         </div>
-                        <div class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-600">
-                            <strong>Current Question Focus:</strong> Question ${q.targetQ} (${q.hint})
+                        <div class="mt-3 p-2.5 bg-blue-50/70 border border-blue-200/80 rounded text-xs text-[#1e3a5f] font-medium">
+                            <strong>Active Target Item:</strong> Question ${q.targetQ} (${q.hint})
                         </div>
                     </div>
                 `;
@@ -545,7 +670,7 @@
                 questionContentHtml = `
                     <div class="space-y-4">
                         <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">${activeQ.taskTitle}</h3>
-                        <div class="bg-[#fdfcf7] border border-amber-200/80 p-5 rounded text-sm leading-relaxed text-gray-800 max-h-[260px] overflow-y-auto space-y-2">
+                        <div class="bg-[#fdfcf7] border border-amber-200/80 p-5 rounded text-sm leading-relaxed text-gray-800 max-h-[280px] overflow-y-auto space-y-2">
                             <h4 class="font-bold text-[#1e3a5f] border-b border-amber-200/50 pb-1 mb-2">${activeQ.contextTitle}</h4>
                             <p class="text-gray-800">${activeQ.contextText}</p>
                         </div>
@@ -571,6 +696,7 @@
             card.innerHTML = `
                 <div class="flex-grow flex flex-col justify-between space-y-6">
                     <div>
+                        <!-- Header / Progress Bar -->
                         <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
                             <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Module ${moduleNum}</span>
                             <span class="text-xs font-semibold text-[#1e3a5f] bg-blue-50 px-2.5 py-1 rounded-full">Question ${index + 1} of ${questions.length}</span>
@@ -578,6 +704,7 @@
                         ${questionContentHtml}
                     </div>
 
+                    <!-- Navigation Controls -->
                     <div class="flex justify-between items-center pt-4 border-t border-gray-200">
                         <button onclick="navigateQuestion(${moduleNum}, -1)" ${index === 0 ? 'disabled class="opacity-40 bg-gray-300 text-gray-600 font-medium px-5 py-2 rounded text-sm cursor-not-allowed"' : 'class="bg-gray-600 hover:bg-gray-700 text-white font-medium px-5 py-2 rounded text-sm transition-colors shadow-sm"'}>
                             Back
@@ -589,15 +716,19 @@
                 </div>
             `;
 
+            // Auto-populate stored fill-in answers
             if (activeQ.type === 'FILL') {
                 const inputs = card.querySelectorAll('input[data-q]');
                 inputs.forEach(inp => {
                     const qNum = inp.getAttribute('data-q');
-                    if (answers[qNum]) {
-                        inp.value = answers[qNum];
+                    const compIdx = parseInt(inp.getAttribute('data-comp') || '0', 10);
+                    
+                    if (answers[qNum] && Array.isArray(answers[qNum]) && answers[qNum][compIdx] !== undefined) {
+                        inp.value = answers[qNum][compIdx];
                     }
+
                     inp.addEventListener('input', (e) => {
-                        saveAnswer(moduleNum, qNum, e.target.value.trim());
+                        saveFillAnswer(moduleNum, qNum, compIdx, e.target.value.toLowerCase().trim());
                     });
                 });
             }
@@ -680,6 +811,14 @@
             }
         }
 
+        function saveFillAnswer(moduleNum, qNum, compIdx, val) {
+            const targetMap = moduleNum === 1 ? state.m1Answers : state.m2Answers;
+            if (!targetMap[qNum] || !Array.isArray(targetMap[qNum])) {
+                targetMap[qNum] = [];
+            }
+            targetMap[qNum][compIdx] = val;
+        }
+
         function navigateQuestion(moduleNum, direction) {
             if (moduleNum === 1) {
                 const nextIdx = state.m1Index + direction;
@@ -708,155 +847,132 @@
 
         function finishModule2() {
             clearInterval(state.m2TimerInterval);
-            state.currentStage = 'END_PHASE_2';
+            state.currentStage = 'END_PHASE';
+            
+            // Record and save submission
+            saveSubmissionRecord();
             render();
-            calculateAndSaveSubmission();
         }
 
-        function calculateAndSaveSubmission() {
+        // Scoring Calculation Logic
+        function calculateModuleScore(moduleNum) {
+            const userAnswers = moduleNum === 1 ? state.m1Answers : state.m2Answers;
+            const keyMap = moduleNum === 1 ? m1CorrectAnswers : m2CorrectAnswers;
             let score = 0;
-            let total = 50;
 
-            // Grade Module 1 (1-35)
-            for (let i = 1; i <= 35; i++) {
-                const userAns = (state.m1Answers[i] || '').trim().toLowerCase();
-                const correctAns = (m1CorrectAnswers[i] || '').toString().trim().toLowerCase();
-                if (userAns && userAns === correctAns) {
-                    score++;
+            for (const qId in keyMap) {
+                const correctVal = keyMap[qId];
+                const userVal = userAnswers[qId];
+
+                if (Array.isArray(correctVal)) {
+                    // Fill in blanks strict matching rule: all letter components must match exactly
+                    if (Array.isArray(userVal) && userVal.length === correctVal.length) {
+                        let allCorrect = true;
+                        for (let i = 0; i < correctVal.length; i++) {
+                            if ((userVal[i] || '').trim().toLowerCase() !== correctVal[i].toLowerCase()) {
+                                allCorrect = false;
+                                break;
+                            }
+                        }
+                        if (allCorrect) score++;
+                    }
+                } else {
+                    // Multiple choice matching rule
+                    if (typeof userVal === 'string' && userVal.trim().toUpperCase() === correctVal.toUpperCase()) {
+                        score++;
+                    }
                 }
             }
+            return score;
+        }
 
-            // Grade Module 2 (1-15)
-            for (let i = 1; i <= 15; i++) {
-                const userAns = (state.m2Answers[i] || '').trim().toLowerCase();
-                const correctAns = (m2CorrectAnswers[i] || '').toString().trim().toLowerCase();
-                if (userAns && userAns === correctAns) {
-                    score++;
-                }
-            }
+        // Real-Time Submissions Persistence
+        function saveSubmissionRecord() {
+            const m1Score = calculateModuleScore(1);
+            const m2Score = calculateModuleScore(2);
+            const totalScore = m1Score + m2Score;
+
+            const now = new Date();
+            const timeString = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
             const submission = {
-                name: state.studentName || 'Anonymous',
-                email: state.studentEmail || 'N/A',
-                score: `${score} / ${total} (${Math.round((score/total)*100)}%)`,
-                timestamp: new Date().toLocaleString()
+                id: Date.now(),
+                name: state.studentName,
+                email: state.studentEmail,
+                timestamp: timeString,
+                m1Score: m1Score,
+                m2Score: m2Score,
+                totalScore: totalScore
             };
 
-            let subs = [];
-            try {
-                const existing = localStorage.getItem('reading_test_submissions');
-                if (existing) {
-                    subs = JSON.parse(existing);
-                }
-            } catch (e) {
-                subs = [];
-            }
-
-            subs.push(submission);
-            localStorage.setItem('reading_test_submissions', JSON.stringify(subs));
+            let existing = JSON.parse(localStorage.getItem('ibt_student_submissions') || '[]');
+            existing.push(submission);
+            localStorage.setItem('ibt_student_submissions', JSON.stringify(existing));
         }
 
+        // Teacher Dashboard Password & View Logic
         function openTeacherDashboardModal() {
-            const modal = document.getElementById('teacher-modal');
-            const body = document.getElementById('dashboard-body');
-            modal.classList.remove('hidden');
-            
-            body.innerHTML = `
-                <div class="space-y-4 max-w-md mx-auto py-4">
-                    <p class="text-sm text-gray-700 font-medium">Enter password to access Teacher Dashboard:</p>
-                    <input type="password" id="teacher-pwd" placeholder="Enter password" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#1e3a5f]">
-                    <div id="pwd-error" class="text-xs text-rose-600 font-medium hidden">Incorrect password.</div>
-                    <button onclick="verifyTeacherPassword()" class="w-full bg-[#1e3a5f] hover:bg-[#2b4c7e] text-white font-medium py-2 rounded text-sm transition-colors">
-                        Access Dashboard
-                    </button>
-                </div>
-            `;
+            document.getElementById('password-error').classList.add('hidden');
+            document.getElementById('teacher-password-input').value = '';
+            document.getElementById('password-modal').classList.remove('hidden');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal').classList.add('hidden');
         }
 
         function verifyTeacherPassword() {
-            const pwdInput = document.getElementById('teacher-pwd');
-            const errEl = document.getElementById('pwd-error');
-            if (pwdInput && pwdInput.value === '2026ibtppb') {
-                renderDashboardContent();
+            const pwdInp = document.getElementById('teacher-password-input').value;
+            if (pwdInp === '2026ibtppb') {
+                closePasswordModal();
+                showDashboardModal();
             } else {
-                if (errEl) errEl.classList.remove('hidden');
+                document.getElementById('password-error').classList.remove('hidden');
             }
         }
 
-        function renderDashboardContent() {
-            const body = document.getElementById('dashboard-body');
-            let subs = [];
-            try {
-                const existing = localStorage.getItem('reading_test_submissions');
-                if (existing) {
-                    subs = JSON.parse(existing);
-                }
-            } catch (e) {
-                subs = [];
-            }
+        function showDashboardModal() {
+            const tbody = document.getElementById('dashboard-table-body');
+            const countLabel = document.getElementById('submission-count-label');
+            const submissions = JSON.parse(localStorage.getItem('ibt_student_submissions') || '[]');
 
-            if (subs.length === 0) {
-                body.innerHTML = `
-                    <div class="text-center py-8 text-gray-500 text-sm">
-                        No submissions recorded yet.
-                    </div>
+            tbody.innerHTML = '';
+            countLabel.textContent = `Total Submissions: ${submissions.length}`;
+
+            if (submissions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-gray-500 italic text-sm">No student submissions recorded yet.</td>
+                    </tr>
                 `;
-                return;
+            } else {
+                submissions.forEach((sub, index) => {
+                    const row = document.createElement('tr');
+                    row.className = index % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-50';
+                    row.innerHTML = `
+                        <td class="py-3 px-4 font-mono text-xs text-gray-500">${index + 1}</td>
+                        <td class="py-3 px-4 font-semibold text-gray-900">${escapeHtml(sub.name)} ${sub.email ? `<span class="text-xs font-normal text-gray-500">(${escapeHtml(sub.email)})</span>` : ''}</td>
+                        <td class="py-3 px-4 text-xs text-gray-600">${sub.timestamp}</td>
+                        <td class="py-3 px-4 text-center font-medium">${sub.m1Score} / 35</td>
+                        <td class="py-3 px-4 text-center font-medium">${sub.m2Score} / 15</td>
+                        <td class="py-3 px-4 text-center font-bold text-[#1e3a5f] bg-blue-50/50">${sub.totalScore} / 50</td>
+                    `;
+                    tbody.appendChild(row);
+                });
             }
 
-            body.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold uppercase tracking-wider text-gray-600">Total Submissions: ${subs.length}</span>
-                        <button onclick="clearSubmissions()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded transition-colors">Clear All Submissions</button>
-                    </div>
-                    <div class="overflow-x-auto border border-gray-200 rounded">
-                        <table class="w-full text-left text-sm text-gray-800 divide-y divide-gray-200">
-                            <thead class="bg-gray-50 text-gray-700 font-semibold">
-                                <tr>
-                                    <th class="py-2.5 px-4">Student Name</th>
-                                    <th class="py-2.5 px-4">Email</th>
-                                    <th class="py-2.5 px-4">Score</th>
-                                    <th class="py-2.5 px-4">Submitted At</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 bg-white">
-                                ${subs.map(s => `
-                                    <tr>
-                                        <td class="py-2.5 px-4 font-medium">${escapeHtml(s.name)}</td>
-                                        <td class="py-2.5 px-4 text-gray-600">${escapeHtml(s.email)}</td>
-                                        <td class="py-2.5 px-4 font-semibold text-[#1e3a5f]">${escapeHtml(s.score)}</td>
-                                        <td class="py-2.5 px-4 text-gray-500 text-xs">${escapeHtml(s.timestamp)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+            document.getElementById('dashboard-modal').classList.remove('hidden');
         }
 
-        function clearSubmissions() {
-            if (confirm('Are you sure you want to clear all test submissions?')) {
-                localStorage.removeItem('reading_test_submissions');
-                renderDashboardContent();
+        function closeDashboardModal() {
+            document.getElementById('dashboard-modal').classList.add('hidden');
+        }
+
+        function clearAllSubmissions() {
+            if (confirm('Are you sure you want to clear all student submission records? This action cannot be undone.')) {
+                localStorage.removeItem('ibt_student_submissions');
+                showDashboardModal();
             }
-        }
-
-        function closeTeacherDashboard() {
-            const modal = document.getElementById('teacher-modal');
-            modal.classList.add('hidden');
-        }
-
-        function handleListeningClick() {
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded shadow-lg text-sm transition-opacity duration-300 z-50';
-            toast.textContent = 'Reading test complete. Moving to the Listening Section!';
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
         }
 
         function escapeHtml(str) {
@@ -869,13 +985,14 @@
         window.startModule2 = startModule2;
         window.navigateQuestion = navigateQuestion;
         window.saveAnswer = saveAnswer;
-        window.handleListeningClick = handleListeningClick;
+        window.saveFillAnswer = saveFillAnswer;
         window.openTeacherDashboardModal = openTeacherDashboardModal;
-        window.closeTeacherDashboard = closeTeacherDashboard;
+        window.closePasswordModal = closePasswordModal;
         window.verifyTeacherPassword = verifyTeacherPassword;
-        window.clearSubmissions = clearSubmissions;
+        window.closeDashboardModal = closeDashboardModal;
+        window.clearAllSubmissions = clearAllSubmissions;
 
-        // Initialize App on Window Load
+        // Start App
         window.addEventListener('DOMContentLoaded', () => {
             render();
         });
